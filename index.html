@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jardim da Verdade - Ouvindo a Voz de Deus</title>
+    
+    <!-- Meta tags Web App (PWA) e GitHub Pages -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#fdf8f5">
+
+    <!-- Meta Tags para Pré-visualização no WhatsApp -->
+    <meta property="og:title" content="Jardim da Verdade - Ouvindo a Voz de Deus">
+    <meta property="og:description" content="Um espaço de paz para estudar a Palavra de Deus, meditar e colecionar borboletas. Sem pressa, no seu ritmo.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1590880449155-b54f958ce314?q=80&w=600&auto=format&fit=crop">
+
+    <!-- Favicon Borboleta -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23722f37'%3E%3Cpath d='M12 2c-.5 0-1 .5-1 1v7c0 .5.5 1 1 1s1-.5 1-1V3c0-.5-.5-1-1-1zm6.5 2c-1.2 0-2.5.5-3.5 1.5-1 1-1.5 2.2-1.5 3.5 0 .5.5 1 1 1s1-.5 1-1c0-.8.3-1.5.8-2 .5-.5 1.2-.8 2-.8.5 0 1-.5 1-1s-.5-1-1.8-1.2zm-13 0C4.2 4 3.7 4.5 3.7 5s.5 1 1 1c.8 0 1.5.3 2 .8.5.5.8 1.2.8 2 0 .5.5 1 1 1s1-.5 1-1c0-1.3-.5-2.5-1.5-3.5C7.5 4.5 6.2 4 5.5 4zM20 9c-1.5 0-3 1-4 2.5V12c0 .5.5 1 1 1h2c1.5 0 2.5-1 2.5-2.5S21.5 9 20 9zM4 9c-1.5 0-2.5 1-2.5 2.5S2.5 13 4 13h2c.5 0 1-.5 1-1v-.5C6 10 4.5 9 4 9zm10 5c-.5 0-1 .5-1 1v6c0 .5.5 1 1 1s1-.5 1-1v-6c0-.5-.5-1-1-1zm-4 0c-.5 0-1 .5-1 1v6c0 .5.5 1 1 1s1-.5 1-1v-6c0-.5-.5-1-1-1z'/%3E%3C/svg%3E">
+
+    <!-- Bibliotecas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <!-- Fontes Clássicas e Acolhedoras -->
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --color-bg: #fdf8f5; /* Creme pergaminho */
+            --color-wine: #722F37; /* Vinho / Bordô */
+            --color-wine-light: #9e4751;
+            --color-olive: #556B2F; /* Verde Oliva */
+            --color-olive-light: #7b9947;
+            --color-text: #2d2d2d;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #eaddd7;
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            overscroll-behavior-y: none;
+        }
+
+        .font-serif-text { font-family: 'Lora', serif; }
+
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            height: 100vh;
+            height: 100dvh;
+            background-color: var(--color-bg);
+            /* Fundo com textura floral/aquarela muito sutil */
+            background-image: url('https://www.transparenttextures.com/patterns/cream-paper.png');
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Botões Acolhedores */
+        .btn-elegant {
+            background-color: var(--color-wine);
+            color: white;
+            border-radius: 16px;
+            padding: 18px 24px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            box-shadow: 0 4px 12px rgba(114, 47, 55, 0.25);
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        .btn-elegant:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 6px rgba(114, 47, 55, 0.2);
+        }
+        .btn-olive {
+            background-color: var(--color-olive);
+            box-shadow: 0 4px 12px rgba(85, 107, 47, 0.25);
+        }
+
+        /* Botões de Múltipla Escolha (Quiz) */
+        .btn-option {
+            background-color: white;
+            color: var(--color-text);
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: left;
+            transition: all 0.3s;
+            width: 100%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .btn-option.correct {
+            background-color: var(--color-olive);
+            border-color: var(--color-olive);
+            color: white;
+        }
+        .btn-option.wrong {
+            background-color: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #9ca3af;
+            opacity: 0.7;
+        }
+
+        /* Jardim de Escolhas (Frases) */
+        .btn-phrase {
+            background-color: #fffaf0;
+            border: 2px dashed #d1d5db;
+            color: var(--color-text);
+            border-radius: 16px;
+            padding: 18px;
+            font-size: 1.15rem;
+            font-family: 'Lora', serif;
+            font-style: italic;
+            text-align: left;
+            transition: all 0.3s;
+            line-height: 1.4;
+        }
+        .btn-phrase.selected {
+            border: 2px solid var(--color-wine);
+            background-color: #fdf2f2;
+            color: var(--color-wine);
+            font-weight: bold;
+        }
+
+        /* Acessibilidade - Tamanho da Letra */
+        body.text-size-large { font-size: 120% !important; }
+        body.text-size-large .btn-option, body.text-size-large .btn-phrase { font-size: 1.35rem; }
+        body.text-size-large h2 { font-size: 130%; }
+
+        .hidden-screen { display: none !important; }
+
+        /* Animações Suaves */
+        .fade-in { animation: fadeIn 0.6s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .butterfly-anim {
+            animation: fly 4s ease-in-out infinite alternate;
+        }
+        @keyframes fly {
+            0% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-15px) rotate(3deg); }
+            100% { transform: translateY(0) rotate(-3deg); }
+        }
+
+        /* Barra Metamorfose */
+        .meta-line { flex: 1; height: 4px; background: #e5e7eb; border-radius: 4px; margin: 0 8px; position: relative; overflow: hidden; }
+        .meta-fill { position: absolute; top: 0; left: 0; height: 100%; background: var(--color-olive); transition: width 0.5s ease; }
+    </style>
+</head>
+<body id="body-tag">
+
+    <div class="app-container" id="app">
+
+        <!-- BARRA DO TOPO (CONTROLES SENSORIAIS) -->
+        <div class="bg-[--color-wine] text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-50 rounded-b-xl border-b-4 border-[--color-wine-light]">
+            <div class="flex items-center gap-3">
+                <button onclick="showScreen('screen-map')" class="text-xl hover:text-orange-200 transition-colors font-bold flex items-center gap-1.5">
+                    <i class="fa-solid fa-leaf"></i> Jardim
+                </button>
+                <!-- Contador de Gotas de Néctar (Substituindo o antigo XP) -->
+                <div class="bg-amber-100/95 text-[--color-wine] px-3 py-1 rounded-full text-sm font-extrabold flex items-center gap-1.5 shadow-inner border border-amber-300" title="Gotas de Néctar para alimentar suas borboletas">
+                    <span>🍯</span>
+                    <span id="nectar-display">0</span>
+                    <span class="hidden sm:inline">Gotas de Néctar</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-5">
+                <!-- Controle de Velocidade da Voz -->
+                <button onclick="toggleVoiceSpeed()" id="btn-voice-speed" class="text-xl" title="Velocidade da Voz">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </button>
+                <!-- Controle de Música Instrumental -->
+                <button onclick="toggleMusic()" id="btn-music" class="text-xl opacity-50" title="Música de Fundo">
+                    <i class="fa-solid fa-music"></i>
+                </button>
+                <!-- Acessibilidade Visual -->
+                <button onclick="toggleTextSize()" class="text-xl font-bold" title="Tamanho da Letra">
+                    A<span class="text-sm">+</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- TELA 1: BOAS VINDAS E NOME -->
+        <div id="screen-welcome" class="hidden-screen flex-1 flex flex-col items-center justify-center p-8 text-center fade-in">
+            <i class="fa-solid fa-seedling text-6xl text-[--color-olive] mb-4"></i>
+            <h1 class="text-4xl font-serif-text text-[--color-wine] font-bold mb-2">Jardim da Verdade</h1>
+            <p class="text-xl text-gray-700 mb-8 font-serif-text italic">Ouvindo a Voz de Deus no seu ritmo.</p>
+
+            <div class="bg-white p-6 rounded-3xl shadow-lg w-full max-w-sm mb-6 border border-gray-100">
+                <label class="block text-gray-700 text-xl font-bold mb-4 font-serif-text">Qual é o seu nome?</label>
+                <input type="text" id="player-name-input" placeholder="Digite com carinho..." class="w-full p-4 text-2xl bg-orange-50 border-2 border-orange-100 rounded-2xl text-center focus:outline-none focus:border-[--color-wine] mb-6 text-[--color-wine] font-bold">
+                <button onclick="startGame()" class="btn-elegant">
+                    Entrar no Jardim
+                </button>
+            </div>
+            <p class="text-gray-500 text-sm">Um ambiente de paz. Sem pressa, sem provas.</p>
+        </div>
+
+        <!-- TELA 2: O JARDIM (MAPA DOS ESTUDOS) -->
+        <div id="screen-map" class="hidden-screen flex-1 flex flex-col overflow-y-auto fade-in">
+            <div class="p-6 pb-2 text-center relative">
+                <!-- Sorteio do Pão Diário -->
+                <div class="absolute top-4 right-4 text-3xl opacity-20"><i class="fa-solid fa-dove"></i></div>
+                <h2 class="text-3xl font-serif-text text-[--color-wine] font-bold">
+                    Olá, <span class="player-name-span">Amiga</span>!
+                </h2>
+
+                <!-- Painel de Nutrição do Borboletário (Néctar & Borboletas) -->
+                <div class="grid grid-cols-2 gap-3 mt-4 mb-2">
+                    <div class="bg-amber-50 p-3 rounded-2xl border-2 border-amber-200 shadow-sm flex items-center gap-3 text-left">
+                        <div class="text-3xl">🍯</div>
+                        <div>
+                            <div class="text-xs text-amber-900 font-bold uppercase tracking-wider">Néctar das Flores</div>
+                            <div class="text-xl font-extrabold text-[--color-wine]"><span id="map-nectar-count">0</span> Gotas</div>
+                        </div>
+                    </div>
+                    <div class="bg-emerald-50 p-3 rounded-2xl border-2 border-emerald-200 shadow-sm flex items-center gap-3 text-left">
+                        <div class="text-3xl">🦋</div>
+                        <div>
+                            <div class="text-xs text-emerald-900 font-bold uppercase tracking-wider">Borboletário</div>
+                            <div class="text-xl font-extrabold text-[--color-olive]"><span id="map-butterfly-count">0</span> / 27</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 mt-3 mb-2">
+                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mb-1">Pão Diário</p>
+                    <p id="daily-bread" class="text-lg text-gray-800 font-serif-text italic">"Deixo-vos a paz, a minha paz vos dou..." (João 14:27)</p>
+                </div>
+            </div>
+
+            <!-- Botão do Diário -->
+            <div class="px-6 py-2">
+                <button onclick="openDiary()" class="w-full bg-white border-2 border-[--color-olive] text-[--color-olive] font-bold py-4 rounded-2xl flex items-center justify-center gap-3 shadow-sm text-xl transition-transform active:scale-95">
+                    <i class="fa-solid fa-book-open"></i> Meu Jardim de Memórias
+                </button>
+            </div>
+
+            <div class="px-6 mt-4">
+                <h3 class="text-xl font-bold text-gray-700 font-serif-text mb-2 border-b-2 border-gray-200 pb-1">Borboletário de Estudos:</h3>
+            </div>
+
+            <!-- Lista de Estudos -->
+            <div class="flex-1 p-6 pt-2 space-y-4" id="lessons-list">
+                <!-- Gerado via JS -->
+            </div>
+        </div>
+
+        <!-- TELA 3: JARDIM DE MEMÓRIAS (DIÁRIO) -->
+        <div id="screen-diary" class="hidden-screen flex-1 flex flex-col fade-in bg-white">
+            <div class="p-6 border-b border-gray-100 bg-orange-50">
+                <button onclick="showScreen('screen-map')" class="text-[--color-wine] font-bold mb-4 text-lg">
+                    <i class="fa-solid fa-arrow-left"></i> Voltar ao Jardim
+                </button>
+                <h2 class="text-3xl font-serif-text text-[--color-wine] font-bold">Jardim de Memórias</h2>
+                <p class="text-gray-600 mt-1">Suas decisões guardadas com amor no coração.</p>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6 space-y-5" id="diary-list">
+                <!-- Gerado via JS -->
+            </div>
+        </div>
+
+        <!-- TELA 4: A ORAÇÃO (PASSO 1) -->
+        <div id="screen-prayer" class="hidden-screen flex-1 flex flex-col items-center justify-center p-8 text-center fade-in bg-white">
+            <div class="text-[--color-wine] text-6xl mb-6"><i class="fa-solid fa-hands-praying"></i></div>
+            <h2 class="text-3xl font-serif-text text-[--color-wine] font-bold mb-4">Momento de Conexão</h2>
+            
+            <p class="text-2xl text-gray-700 leading-relaxed mb-10 font-serif-text bg-orange-50 p-6 rounded-3xl border border-orange-100 shadow-sm" id="prayer-text">
+                Carregando oração...
+            </p>
+
+            <button onclick="goToStep('verse')" class="btn-elegant w-full max-w-sm mb-4">
+                Já fiz a oração ❤️
+            </button>
+        </div>
+
+        <!-- TELA 5: LEITURA FÍSICA (PASSO 2) -->
+        <div id="screen-verse" class="hidden-screen flex-1 flex flex-col items-center justify-center p-8 text-center fade-in">
+            <div class="text-[--color-olive] text-6xl mb-6"><i class="fa-solid fa-book-bible"></i></div>
+            <h2 class="text-3xl font-serif-text text-gray-800 font-bold mb-3">Momento da Palavra</h2>
+            <p class="text-xl text-gray-600 mb-6 font-serif-text">Pegue a sua Bíblia e leia com calma o texto abaixo:</p>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-md border-l-8 border-[--color-olive] w-full max-w-sm mb-10">
+                <h1 id="lesson-verse-ref" class="text-5xl font-serif-text text-[--color-olive] font-bold tracking-wide">João 17:17</h1>
+            </div>
+
+            <button onclick="goToStep('summary')" class="btn-elegant btn-olive w-full max-w-sm">
+                Já li na minha Bíblia
+            </button>
+        </div>
+
+        <!-- TELA 6: O RESUMO (PASSO 3) -->
+        <div id="screen-summary" class="hidden-screen flex-1 flex flex-col p-6 fade-in bg-white">
+            <div class="flex justify-between items-center mb-6 border-b-2 border-gray-100 pb-4">
+                <h2 class="text-3xl font-serif-text text-[--color-wine] font-bold">O que aprendemos?</h2>
+                <button onclick="readSummary()" class="w-14 h-14 rounded-full bg-orange-100 text-[--color-wine] text-2xl shadow-sm flex items-center justify-center transition-transform active:scale-95">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto mb-6">
+                <ul id="lesson-tips" class="space-y-6 text-2xl text-gray-800 font-serif-text leading-relaxed">
+                    <!-- Injetado via JS -->
+                </ul>
+            </div>
+
+            <button onclick="startQuiz()" class="btn-elegant mt-auto">
+                Ir para a Meditação
+            </button>
+        </div>
+
+        <!-- TELA 7: O QUIZ ELEGANTE (PASSO 4) -->
+        <div id="screen-quiz" class="hidden-screen flex-1 flex flex-col p-6 fade-in">
+            
+            <!-- Barra da Metamorfose (Anti-ansiedade) -->
+            <div class="flex justify-between items-center mb-8 px-2 text-[--color-olive]">
+                <i class="fa-solid fa-worm text-3xl" id="prog-icon-1"></i>
+                <div class="meta-line"><div id="prog-bar-1" class="meta-fill" style="width:0%"></div></div>
+                <i class="fa-solid fa-leaf text-3xl text-gray-300" id="prog-icon-2"></i>
+                <div class="meta-line"><div id="prog-bar-2" class="meta-fill" style="width:0%"></div></div>
+                <i class="fa-solid fa-bug text-3xl text-gray-300" id="prog-icon-3"></i>
+            </div>
+
+            <!-- MODO FOCO ZEN: Apenas a Pergunta e Opções -->
+            <div class="flex-1 flex flex-col justify-center">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 mb-8 relative">
+                    <button onclick="playTTS('quiz-question')" class="absolute -top-6 -right-2 w-14 h-14 rounded-full bg-[--color-wine] text-white text-xl shadow-lg flex items-center justify-center transition-transform active:scale-95">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <h3 id="quiz-question" class="text-2xl font-serif-text text-gray-900 font-bold leading-relaxed pr-6">
+                        Pergunta
+                    </h3>
+                </div>
+
+                <div id="quiz-options" class="flex flex-col gap-4">
+                    <!-- Botões A, B, C via JS -->
+                </div>
+            </div>
+            
+            <div id="quiz-feedback" class="mt-6 text-center text-2xl font-bold font-serif-text hidden h-10"></div>
+        </div>
+
+        <!-- TELA 8: JARDIM DE ESCOLHAS / REFLEXÃO (PASSO 5) -->
+        <div id="screen-reflection" class="hidden-screen flex-1 flex flex-col p-6 fade-in bg-white overflow-y-auto">
+            <h2 class="text-2xl font-serif-text text-[--color-wine] font-bold mb-4">Para a sua vida...</h2>
+            
+            <p id="reflection-question" class="text-2xl text-gray-800 mb-8 bg-orange-50 p-6 rounded-2xl shadow-sm border-l-4 border-[--color-wine] font-serif-text leading-snug">
+                Pergunta de reflexão
+            </p>
+
+            <p class="text-lg text-gray-600 mb-4 font-bold uppercase tracking-wider text-center">Toque na decisão que toca seu coração:</p>
+            
+            <div id="reflection-options" class="flex flex-col gap-4 mb-8">
+                <!-- Frases via JS -->
+            </div>
+
+            <button onclick="finishStudy()" id="btn-finish-reflection" class="btn-elegant btn-olive hidden mt-auto">
+                Já meditei e guardei no coração ❤️
+            </button>
+        </div>
+
+        <!-- TELA 9: A RECOMPENSA E ORAÇÃO FINAL -->
+        <div id="screen-success" class="hidden-screen flex-1 flex flex-col items-center justify-center p-6 text-center fade-in bg-white">
+            <div class="text-9xl mb-6 butterfly-anim" id="reward-icon">🦋</div>
+            
+            <h2 class="text-4xl font-serif-text text-[--color-olive] font-bold mb-3">Que bênção, <span class="player-name-span">Amiga</span>!</h2>
+            <p class="text-2xl text-gray-700 mb-4 leading-relaxed font-serif-text">
+                Você concluiu este estudo com sabedoria e atraiu uma linda <strong id="reward-name" class="text-[--color-wine]">Borboleta</strong> para o seu jardim.
+            </p>
+
+            <!-- Recompensa de Néctar para alimentar as borboletas -->
+            <div class="bg-amber-50 border-2 border-amber-300 px-6 py-3 rounded-2xl mb-6 shadow-sm inline-flex items-center gap-3">
+                <span class="text-3xl">🍯</span>
+                <span id="reward-nectar-text" class="text-xl font-extrabold text-amber-900">+50 Gotas de Néctar Dourado!</span>
+            </div>
+
+            <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 w-full mb-8 shadow-sm">
+                <i class="fa-solid fa-hands-praying text-4xl text-orange-400 mb-4"></i>
+                <p class="text-xl text-gray-800 font-serif-text italic">
+                    Faça uma curta oração agora, agradecendo a Deus por esse ensinamento e pela paz no seu coração.
+                </p>
+            </div>
+
+            <button onclick="showScreen('screen-map')" class="btn-elegant w-full">
+                Voltar ao Meu Jardim
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================================================================
+        // 2. SISTEMA DE SALVAMENTO QUÁDRUPLO BLINDADO (Com Gotas de Néctar)
+        // =========================================================================
+        const SAVE_KEY = 'jardim_da_verdade_save_v3';
+        const IDB_NAME = 'JardimDB';
+        const IDB_STORE = 'saveStore';
+
+        let state = {
+            playerName: '',
+            nectar: 0,           // Gotas de Néctar Dourado (alimento das borboletas, substitui o XP)
+            completedIds: [],    // IDs dos estudos terminados (borboletas ganhas)
+            diaryEntries: []     // Reflexões escolhidas
+        };
+
+        // IndexedDB
+        function saveToIDB(data) {
+            try {
+                if (!window.indexedDB) return;
+                const req = indexedDB.open(IDB_NAME, 1);
+                req.onupgradeneeded = e => { e.target.result.createObjectStore(IDB_STORE); };
+                req.onsuccess = e => {
+                    const tx = e.target.result.transaction(IDB_STORE, 'readwrite');
+                    tx.objectStore(IDB_STORE).put(JSON.stringify(data), SAVE_KEY);
+                };
+            } catch (e) {}
+        }
+        function loadFromIDB() {
+            return new Promise(resolve => {
+                try {
+                    if (!window.indexedDB) return resolve(null);
+                    const req = indexedDB.open(IDB_NAME, 1);
+                    req.onupgradeneeded = e => { e.target.result.createObjectStore(IDB_STORE); };
+                    req.onsuccess = e => {
+                        const tx = e.target.result.transaction(IDB_STORE, 'readonly');
+                        const getReq = tx.objectStore(IDB_STORE).get(SAVE_KEY);
+                        getReq.onsuccess = () => resolve(getReq.result || null);
+                        getReq.onerror = () => resolve(null);
+                    };
+                    req.onerror = () => resolve(null);
+                } catch (e) { resolve(null); }
+            });
+        }
+
+        // Cookies
+        function setCookieBackup(value) {
+            try {
+                const d = new Date(); d.setTime(d.getTime() + (365*24*60*60*1000));
+                document.cookie = SAVE_KEY + "=" + encodeURIComponent(value) + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
+            } catch (e) {}
+        }
+        function getCookieBackup() {
+            try {
+                const cname = SAVE_KEY + "=";
+                const ca = decodeURIComponent(document.cookie).split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i].trim();
+                    if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
+                }
+            } catch (e) {} return "";
+        }
+
+        function applyParsedSave(raw) {
+            if (!raw) return false;
+            try {
+                const parsed = JSON.parse(raw);
+                state = {
+                    ...state,
+                    ...parsed,
+                    nectar: typeof parsed.nectar === 'number' ? parsed.nectar : (parsed.completedIds ? parsed.completedIds.length * 50 : 0),
+                    completedIds: parsed.completedIds || [],
+                    diaryEntries: parsed.diaryEntries || []
+                };
+                return Boolean(state.playerName && state.playerName.trim() !== '');
+            } catch (e) { return false; }
+        }
+
+        function saveData() {
+            const str = JSON.stringify(state);
+            try { localStorage.setItem(SAVE_KEY, str); } catch(e){}
+            try { window.name = 'JV_SAVE:' + encodeURIComponent(str); } catch(e){}
+            setCookieBackup(str);
+            saveToIDB(state);
+            updateUI();
+        }
+
+        function loadData() {
+            let raw = null;
+            try { raw = localStorage.getItem(SAVE_KEY); } catch(e){}
+            if (!raw) { try { if (window.name && window.name.startsWith('JV_SAVE:')) raw = decodeURIComponent(window.name.replace('JV_SAVE:', '')); } catch(e){} }
+            if (!raw) raw = getCookieBackup();
+            return applyParsedSave(raw);
+        }
+
+        // =========================================================================
+        // MOTOR DE VOZ MASCULINA NEURAL AUTOMÁTICA (ZERO ROBÓTICA)
+        // =========================================================================
+        let availableMaleVoices = [];
+        let currentAudioPlayer = null;
+        let speechQueueActive = false;
+        const ttsAudioCache = new Map();
+
+        // Filtra e prioriza vozes MASCULINAS NEURAIS (como Microsoft Antonio Neural / Daniel / Nicolau)
+        function loadNaturalVoices() {
+            if (!('speechSynthesis' in window)) return;
+            const allVoices = window.speechSynthesis.getVoices();
+            if (!allVoices || allVoices.length === 0) return;
+
+            const ptVoices = allVoices.filter(v => 
+                v.lang.toLowerCase().includes('pt-br') || 
+                v.lang.toLowerCase().includes('pt_br') || 
+                v.lang.toLowerCase().startsWith('pt')
+            );
+
+            function scoreMaleVoice(v) {
+                const name = v.name.toLowerCase();
+                let score = 0;
+                if (v.lang.toLowerCase().includes('br')) score += 25;
+                // Prioridade máxima para vozes Masculinas Neurais/Naturais
+                if (name.includes('antonio') || name.includes('antônio')) score += 200;
+                if (name.includes('daniel') || name.includes('nicolau') || name.includes('fabio') || name.includes('fábio') || name.includes('humberto') || name.includes('valerio')) score += 160;
+                if (name.includes('felipe') || name.includes('ricardo') || name.includes('jorge') || name.includes('luca')) score += 140;
+                if (name.includes('natural') || name.includes('neural') || name.includes('online')) score += 120;
+                if (name.includes('premium') || name.includes('enhanced')) score += 80;
+                if (!v.localService) score += 40;
+                // Penaliza vozes femininas conhecidas para garantir timbre masculino
+                if (name.includes('francisca') || name.includes('maria') || name.includes('luciana') || name.includes('thalita') || name.includes('leila') || name.includes('hel') || name.includes('fernanda')) {
+                    score -= 150;
+                }
+                return score;
+            }
+
+            availableMaleVoices = ptVoices.sort((a, b) => scoreMaleVoice(b) - scoreMaleVoice(a));
+        }
+
+        if ('speechSynthesis' in window) {
+            loadNaturalVoices();
+            window.speechSynthesis.onvoiceschanged = loadNaturalVoices;
+        }
+
+        function getBestMaleVoice() {
+            if (availableMaleVoices.length === 0) loadNaturalVoices();
+            return availableMaleVoices[0] || null;
+        }
+
+        // Converte áudio PCM16 da API Gemini TTS para WAV
+        function pcmToWav(pcm16, sampleRate = 24000) {
+            const buffer = new ArrayBuffer(44 + pcm16.length * 2);
+            const view = new DataView(buffer);
+            const writeString = (offset, str) => {
+                for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+            };
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + pcm16.length * 2, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, pcm16.length * 2, true);
+            for (let i = 0; i < pcm16.length; i++) {
+                view.setInt16(44 + i * 2, pcm16[i], true);
+            }
+            return new Blob([buffer], { type: 'audio/wav' });
+        }
+
+        // Camada 1: Voz Masculina Neural do Gemini (Voz "Orus" - Pastor/Mentor calmo e sereno)
+        async function tryGeminiMaleNeuralTTS(text) {
+            const apiKey = ""; // Preenchido pelo ambiente quando disponível
+            if (!apiKey) return false;
+            try {
+                if (ttsAudioCache.has(text)) {
+                    const cachedUrl = ttsAudioCache.get(text);
+                    currentAudioPlayer = new Audio(cachedUrl);
+                    currentAudioPlayer.playbackRate = isSlowVoice ? 0.88 : 1.0;
+                    await currentAudioPlayer.play();
+                    return true;
+                }
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: `Narre com voz masculina brasileira madura, pastoril, muito serena, calorosa, pausada e natural: ${text}` }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: {
+                            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Orus" } }
+                        }
+                    }
+                };
+                const res = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!res.ok) return false;
+                const result = await res.json();
+                const part = result?.candidates?.[0]?.content?.parts?.[0];
+                const b64 = part?.inlineData?.data;
+                if (!b64) return false;
+
+                const binary = atob(b64);
+                const bytes = new Uint8Array(binary.length);
+                for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                const pcm16 = new Int16Array(bytes.buffer);
+                const wavBlob = pcmToWav(pcm16, 24000);
+                const audioUrl = URL.createObjectURL(wavBlob);
+                ttsAudioCache.set(text, audioUrl);
+
+                currentAudioPlayer = new Audio(audioUrl);
+                currentAudioPlayer.playbackRate = isSlowVoice ? 0.88 : 1.0;
+                await currentAudioPlayer.play();
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Camada 2: Voz Neural Masculina em Nuvem (Funciona direto no GitHub Pages e celulares sem depender de voz robótica local)
+        async function tryCloudMaleNeuralStream(sentences) {
+            try {
+                speechQueueActive = true;
+                for (let i = 0; i < sentences.length; i++) {
+                    if (!speechQueueActive) return true;
+                    const chunk = sentences[i].trim();
+                    if (!chunk) continue;
+
+                    // Usa endpoint neural de tradução/leitura natural com cadência pausada
+                    const encoded = encodeURIComponent(chunk);
+                    const url = `https://translate.googleapis.com/translate_tts?ie=UTF-8&client=tw-ob&tl=pt-BR&q=${encoded}`;
+                    
+                    await new Promise((resolve, reject) => {
+                        const audio = new Audio(url);
+                        currentAudioPlayer = audio;
+                        // Ajuste de velocidade suave para soar caloroso e humano
+                        audio.playbackRate = isSlowVoice ? 0.84 : 0.94;
+                        audio.onended = () => resolve();
+                        audio.onerror = (err) => reject(err);
+                        audio.play().catch(reject);
+                    });
+                }
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        // Prepara o texto para que o narrador fale com pausas respiratórias humanas
+        function humanizeTextForSpeech(text, playerName) {
+            return text
+                .replace(/\[Nome dela\]/g, playerName)
+                .replace(/\[Nome\]/g, playerName)
+                .replace(/2 Tm/g, 'Segunda Timóteo')
+                .replace(/2 Co/g, 'Segunda Coríntios')
+                .replace(/1 Co/g, 'Primeira Coríntios')
+                .replace(/Rm/g, 'Romanos')
+                .replace(/Mt/g, 'Mateus')
+                .replace(/Apoc\./g, 'Apocalipse')
+                .replace(/\(\s*/g, ', ')
+                .replace(/\s*\)/g, ', ')
+                .replace(/(\d+):(\d+)/g, 'capítulo $1, versículo $2');
+        }
+
+        // Função Principal de Voz (Prioriza Voz Masculina Neural Nativa -> Gemini Orus -> Voz Masculina Grave Suave)
+        async function playTTS(elementId, customText = null) {
+            stopTTS();
+
+            let textToRead = customText;
+            if (!textToRead && elementId) {
+                const el = document.getElementById(elementId);
+                textToRead = el ? el.innerText : '';
+            }
+            if (!textToRead) return;
+
+            const name = (state.playerName && state.playerName.trim() !== '') ? state.playerName : 'Amiga';
+            const humanizedText = humanizeTextForSpeech(textToRead, name);
+
+            // 1º: Tenta Voz Masculina Neural "Orus" da IA Gemini (se disponível no ambiente)
+            const usedGemini = await tryGeminiMaleNeuralTTS(humanizedText);
+            if (usedGemini) return;
+
+            const bestMale = getBestMaleVoice();
+            const isHighQualityMaleNeural = bestMale && (
+                bestMale.name.toLowerCase().includes('antonio') ||
+                bestMale.name.toLowerCase().includes('antônio') ||
+                bestMale.name.toLowerCase().includes('neural') ||
+                bestMale.name.toLowerCase().includes('natural') ||
+                bestMale.name.toLowerCase().includes('daniel') ||
+                bestMale.name.toLowerCase().includes('felipe')
+            );
+
+            const sentences = humanizedText.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [humanizedText];
+
+            // 2º: Se o dispositivo tem uma Voz Masculina Neural (como Microsoft Antônio Neural no Edge/Windows ou Felipe/Daniel no iOS)
+            if ('speechSynthesis' in window && bestMale) {
+                speechQueueActive = true;
+                sentences.forEach((sentence) => {
+                    const trimmed = sentence.trim();
+                    if (!trimmed) return;
+                    const utterance = new SpeechSynthesisUtterance(trimmed);
+                    utterance.voice = bestMale;
+                    utterance.lang = bestMale.lang || 'pt-BR';
+                    // Se não for uma voz neural nativa de fábrica, ajustamos o pitch para 0.86 (timbre masculino calmo e grave) e velocidade 0.92
+                    utterance.rate = isSlowVoice ? 0.80 : 0.92;
+                    utterance.pitch = isHighQualityMaleNeural ? 0.96 : 0.84;
+                    utterance.volume = 1.0;
+                    window.speechSynthesis.speak(utterance);
+                });
+                return;
+            }
+
+            // 3º Fallback em nuvem
+            await tryCloudMaleNeuralStream(sentences);
+        }
+
+        function stopTTS() {
+            speechQueueActive = false;
+            if (currentAudioPlayer) {
+                currentAudioPlayer.pause();
+                currentAudioPlayer.currentTime = 0;
+                currentAudioPlayer = null;
+            }
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+        }
+
+        function toggleVoiceSpeed() {
+            isSlowVoice = !isSlowVoice;
+            const btn = document.getElementById('btn-voice-speed');
+            if (isSlowVoice) {
+                btn.classList.add('text-orange-300');
+                playTTS(null, "Vou falar mais devagar e com calma para o seu conforto.");
+            } else {
+                btn.classList.remove('text-orange-300');
+                playTTS(null, "Velocidade de leitura normal ativada.");
+            }
+        }
+
+        function toggleTextSize() {
+            isLargeText = !isLargeText;
+            const body = document.getElementById('body-tag');
+            if (isLargeText) body.classList.add('text-size-large');
+            else body.classList.remove('text-size-large');
+        }
+
+        // =========================================================================
+        // 4. LÓGICA DE TELAS E JARDIM
+        // =========================================================================
+        let currentStudy = null;
+        let questionIndex = 0;
+        let selectedReflection = "";
+
+        function showScreen(id) {
+            stopTTS();
+            document.querySelectorAll('.app-container > div:not(.bg-\\[--color-wine\\])').forEach(el => el.classList.add('hidden-screen'));
+            document.getElementById(id).classList.remove('hidden-screen');
+            window.scrollTo(0,0);
+        }
+
+        function updateUI() {
+            const name = (state.playerName && state.playerName.trim() !== '') ? state.playerName : 'Amiga';
+            document.querySelectorAll('.player-name-span').forEach(el => el.innerText = name);
+
+            // Atualiza contadores de Gotas de Néctar e Borboletas
+            const nectarCount = state.nectar || 0;
+            const butterflyCount = state.completedIds ? state.completedIds.length : 0;
+
+            const topNectar = document.getElementById('nectar-display');
+            if (topNectar) topNectar.innerText = nectarCount;
+
+            const mapNectar = document.getElementById('map-nectar-count');
+            if (mapNectar) mapNectar.innerText = nectarCount;
+
+            const mapButterfly = document.getElementById('map-butterfly-count');
+            if (mapButterfly) mapButterfly.innerText = butterflyCount;
+        }
+
+        async function startGame() {
+            const input = document.getElementById('player-name-input');
+            if (input && input.value.trim()) {
+                state.playerName = input.value.trim();
+                saveData();
+                setupMap();
+            }
+        }
+
+        function setupMap() {
+            const list = document.getElementById('lessons-list');
+            list.innerHTML = '';
+            
+            // Sorteia pão diário
+            document.getElementById('daily-bread').innerText = verses[Math.floor(Math.random() * verses.length)];
+
+            missions.forEach(m => {
+                const isDone = state.completedIds.includes(m.id);
+                const btn = document.createElement('button');
+                btn.className = `w-full p-4 rounded-3xl shadow-sm border-2 text-left flex items-center gap-4 transition-all mb-4 ${isDone ? 'bg-white border-[--color-olive] text-[--color-olive]' : 'bg-white border-gray-100 text-gray-700'}`;
+                btn.onclick = () => startStudy(m.id);
+
+                btn.innerHTML = `
+                    <div class="text-4xl drop-shadow-sm">${isDone ? m.icon : '🌸'}</div>
+                    <div class="flex-1">
+                        <div class="font-serif-text font-bold text-xl leading-tight mb-1">Tema ${m.id}: ${m.title}</div>
+                        <div class="text-sm font-bold ${isDone ? 'text-[--color-olive-light]' : 'text-gray-400'}">${isDone ? m.butterflyName : 'Desabrochar estudo...'}</div>
+                    </div>
+                    <div>${isDone ? '<i class="fa-solid fa-check-circle text-3xl"></i>' : '<i class="fa-solid fa-chevron-right text-gray-300"></i>'}</div>
+                `;
+                list.appendChild(btn);
+            });
+            updateUI();
+            showScreen('screen-map');
+        }
+
+        // =========================================================================
+        // 5. O PASSO A PASSO DO ESTUDO (SEM ESTRESSE)
+        // =========================================================================
+        function startStudy(id) {
+            currentStudy = missions.find(m => m.id === id);
+            const name = state.playerName || 'Amiga';
+            const txtOracao = `Olá, ${name}. Vou ficar aguardando você terminar a oração para que a gente prossiga. Só prosseguiremos se você fizer essa oração. Feche seus olhos e leve seu pensamento a Deus. Fale com Ele rapidamente, não precisa ser demorado. Peça a presença dEle para que você aprenda, para que Deus lhe guie e conduza sempre, ${name}.`;
+            
+            document.getElementById('prayer-text').innerText = `Feche seus olhos, leve seu pensamento a Deus e faça uma oração curta pedindo a presença do Espírito Santo para guiar o aprendizado.`;
+            
+            showScreen('screen-prayer');
+            setTimeout(() => playTTS(null, txtOracao), 800);
+        }
+
+        function goToStep(step) {
+            if (step === 'verse') {
+                playTTS(null, `Que maravilha, ${state.playerName}. Então vamos lá para a primeira etapa! Pegue a sua Bíblia física e leia o versículo que está na tela.`);
+                document.getElementById('lesson-verse-ref').innerText = currentStudy.verse;
+                showScreen('screen-verse');
+            }
+            else if (step === 'summary') {
+                const ul = document.getElementById('lesson-tips');
+                ul.innerHTML = '';
+                currentStudy.tips.forEach(tip => {
+                    const li = document.createElement('li');
+                    li.className = "flex gap-4 items-start pb-4 border-b border-gray-50";
+                    li.innerHTML = `<i class="fa-solid fa-leaf text-[--color-olive-light] mt-1.5 text-xl"></i> <span>${tip}</span>`;
+                    ul.appendChild(li);
+                });
+                showScreen('screen-summary');
+            }
+        }
+
+        function readSummary() {
+            let texto = "O que aprendemos? ";
+            currentStudy.tips.forEach(t => texto += t + ". ");
+            playTTS(null, texto);
+        }
+
+        // =========================================================================
+        // 6. QUIZ MEDITATIVO E JARDIM DE ESCOLHAS
+        // =========================================================================
+        function startQuiz() {
+            questionIndex = 0;
+            updateQuizUI();
+            showScreen('screen-quiz');
+        }
+
+        function updateQuizUI() {
+            const qObj = currentStudy.questions[questionIndex];
+            document.getElementById('quiz-question').innerText = qObj.q;
+            
+            const optsContainer = document.getElementById('quiz-options');
+            optsContainer.innerHTML = '';
+            document.getElementById('quiz-feedback').classList.add('hidden');
+
+            qObj.opts.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-option";
+                btn.innerHTML = `<span class="bg-gray-100 text-gray-500 rounded-full w-10 h-10 flex items-center justify-center shrink-0 font-bold border border-gray-200">${['A', 'B', 'C'][idx]}</span> <span class="leading-tight">${optText}</span>`;
+                btn.onclick = () => handleAnswer(idx, btn);
+                optsContainer.appendChild(btn);
+            });
+
+            // Barra da Metamorfose (Anti-ansiedade)
+            const total = currentStudy.questions.length;
+            const prog = questionIndex / total;
+            document.getElementById('prog-bar-1').style.width = prog > 0.33 ? '100%' : (prog * 300) + '%';
+            document.getElementById('prog-bar-2').style.width = prog > 0.66 ? '100%' : (prog > 0.33 ? ((prog-0.33)*300) + '%' : '0%');
+            
+            document.getElementById('prog-icon-1').className = `fa-solid fa-worm text-3xl transition-colors ${prog >= 0 ? 'text-[--color-olive]' : 'text-gray-300'}`;
+            document.getElementById('prog-icon-2').className = `fa-solid fa-leaf text-3xl transition-colors ${prog >= 0.33 ? 'text-[--color-olive]' : 'text-gray-300'}`;
+            document.getElementById('prog-icon-3').className = `fa-solid fa-bug text-3xl transition-colors ${prog >= 0.66 ? 'text-[--color-olive]' : 'text-gray-300'}`;
+        }
+
+        function handleAnswer(selectedIndex, btnEl) {
+            const qObj = currentStudy.questions[questionIndex];
+            const feedback = document.getElementById('quiz-feedback');
+
+            if (selectedIndex === qObj.c) {
+                // Acertou - Ganha +10 Gotas de Néctar para nutrir as borboletas!
+                btnEl.classList.add('correct');
+                document.getElementById('quiz-options').querySelectorAll('button').forEach(b => b.disabled = true);
+
+                state.nectar = (state.nectar || 0) + 10;
+                saveData();
+
+                const elogios = ["Que sabedoria!", "Você foi brilhante agora!", "Exatamente!", "O Espírito Santo está te guiando!", "Perfeito!"];
+                const elogio = elogios[Math.floor(Math.random() * elogios.length)];
+                
+                feedback.innerText = `${elogio} (+10 Gotas de Néctar 🍯)`;
+                feedback.className = "mt-6 text-center text-2xl font-bold font-serif-text text-[--color-olive] block h-10";
+                playTTS(null, elogio);
+
+                setTimeout(() => {
+                    questionIndex++;
+                    if (questionIndex >= currentStudy.questions.length) loadReflection();
+                    else updateQuizUI();
+                }, 2200);
+            } else {
+                // Errou sem penalidade - Acolhimento
+                btnEl.disabled = true;
+                btnEl.classList.add('wrong');
+                feedback.innerText = "Não foi essa... mas tente outra vez!";
+                feedback.className = "mt-6 text-center text-xl font-bold font-serif-text text-gray-500 block h-10";
+                playTTS(null, feedback.innerText);
+            }
+        }
+
+        function loadReflection() {
+            document.getElementById('reflection-question').innerText = currentStudy.reflectionQ;
+            const container = document.getElementById('reflection-options');
+            container.innerHTML = '';
+            selectedReflection = "";
+            document.getElementById('btn-finish-reflection').classList.add('hidden');
+
+            currentStudy.reflections.forEach((frase, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-phrase flex items-start";
+                btn.innerHTML = `<i class="fa-solid fa-heart text-gray-300 mt-1 mr-3 text-xl transition-colors shrink-0"></i> <span>${frase}</span>`;
+                btn.onclick = () => selectReflection(frase, btn);
+                container.appendChild(btn);
+            });
+
+            showScreen('screen-reflection');
+            playTTS('reflection-question');
+        }
+
+        function selectReflection(frase, btnEl) {
+            const container = document.getElementById('reflection-options');
+            container.querySelectorAll('button').forEach(b => {
+                b.classList.remove('selected');
+                b.querySelector('i').className = "fa-solid fa-heart text-gray-300 mt-1 mr-3 text-xl transition-colors shrink-0";
+            });
+            
+            btnEl.classList.add('selected');
+            btnEl.querySelector('i').className = "fa-solid fa-heart text-[--color-wine] mt-1 mr-3 text-xl transition-colors shrink-0";
+            selectedReflection = frase;
+            
+            document.getElementById('btn-finish-reflection').classList.remove('hidden');
+            playTTS(null, frase);
+        }
+
+        function finishStudy() {
+            // Verifica se é a primeira vez concluindo este tema para dar o bônus de Néctar
+            const isFirstTime = !state.completedIds.includes(currentStudy.id);
+            const bonusNectar = isFirstTime ? 50 : 20;
+            state.nectar = (state.nectar || 0) + bonusNectar;
+
+            if (isFirstTime) {
+                state.completedIds.push(currentStudy.id);
+            }
+            const entryExists = state.diaryEntries.find(e => e.id === currentStudy.id);
+            if (entryExists) entryExists.text = selectedReflection;
+            else state.diaryEntries.push({ id: currentStudy.id, title: currentStudy.title, text: selectedReflection });
+            
+            saveData();
+
+            // Tela de Recompensa (Borboleta + Gotas de Néctar)
+            document.getElementById('reward-name').innerText = currentStudy.butterflyName;
+            const nectarEl = document.getElementById('reward-nectar-text');
+            if (nectarEl) {
+                nectarEl.innerText = `+${bonusNectar} Gotas de Néctar Dourado para suas borboletas!`;
+            }
+            showScreen('screen-success');
+            
+            const msgFinal = `Parabéns, ${state.playerName}! Você concluiu este tema, recebeu ${bonusNectar} gotas de néctar dourado e acaba de atrair uma ${currentStudy.butterflyName} para o seu borboletário! Faça uma curta oração agradecendo a Deus por esse ensinamento.`;
+            playTTS(null, msgFinal);
+        }
+
+        function openDiary() {
+            const list = document.getElementById('diary-list');
+            list.innerHTML = '';
+
+            if (state.diaryEntries.length === 0) {
+                list.innerHTML = `<p class="text-gray-500 text-center italic mt-10 text-xl font-serif-text">O seu jardim de memórias está vazio. Conclua os estudos para plantar suas decisões aqui!</p>`;
+            } else {
+                state.diaryEntries.forEach(entry => {
+                    const div = document.createElement('div');
+                    div.className = "bg-white border-2 border-orange-100 p-6 rounded-3xl shadow-sm relative";
+                    div.innerHTML = `
+                        <div class="absolute -top-4 -right-2 text-3xl">🦋</div>
+                        <h4 class="text-[--color-wine] font-bold font-serif-text text-xl mb-3 border-b-2 border-orange-50 pb-2">${entry.title}</h4>
+                        <p class="text-gray-800 italic font-serif-text text-xl leading-relaxed">"${entry.text}"</p>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+            showScreen('screen-diary');
+        }
+
+        // =========================================================================
+        // INICIALIZAÇÃO
+        // =========================================================================
+        window.onload = async () => {
+            let hasSave = loadData();
+
+            if (!hasSave) {
+                const idbRaw = await loadFromIDB();
+                if (idbRaw && applyParsedSave(idbRaw)) {
+                    hasSave = true;
+                    saveData();
+                }
+            }
+
+            if (hasSave) {
+                setupMap();
+            } else {
+                showScreen('screen-welcome');
+            }
+        };
+    </script>
+</body>
+</html>
