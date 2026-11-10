@@ -218,6 +218,32 @@
                 <button onclick="toggleVoiceSpeed()" id="btn-speed" class="text-sm font-bold px-2 py-1 rounded-lg bg-amber-50 border border-amber-200" title="Velocidade da Voz">1.0x</button>
                 <button onclick="toggleMusic()" id="btn-music" title="Música Instrumental de Paz"><i class="fa-solid fa-music"></i></button>
                 <button onclick="toggleAccessibility()" title="Aumentar Letra"><i class="fa-solid fa-a"></i>+</button>
+                <button onclick="openVoiceConfigModal()" id="btn-voice-key" title="Fixar Voz Neural Orus no GitHub" class="text-lg opacity-80 hover:opacity-100"><i class="fa-solid fa-key"></i></button>
+            </div>
+        </div>
+
+        <!-- MODAL DE ATIVAÇÃO DA VOZ NEURAL ORUS PARA GITHUB PAGES -->
+        <div id="modal-voice-key" class="hidden-screen fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl border border-amber-200 text-left">
+                <div class="flex justify-between items-center mb-3">
+                    <h3 class="text-xl font-serif-text font-bold" style="color: var(--color-wine);">🎙️ Voz Neural Orus (GitHub)</h3>
+                    <button onclick="closeVoiceConfigModal()" class="text-gray-400 hover:text-gray-700 text-xl font-bold">✕</button>
+                </div>
+                <p class="text-sm text-gray-600 mb-3 leading-relaxed">
+                    Para que a voz masculina <strong>Orus (Gemini Neural TTS)</strong> funcione fora daqui (no link do GitHub), cole abaixo sua chave gratuita do <strong>Google AI Studio</strong> (<a href="https://aistudio.google.com/apikey" target="_blank" class="underline text-amber-700 font-bold">criar chave grátis aqui</a>):
+                </p>
+                <input type="password" id="input-gemini-key" placeholder="Cole sua chave AIzaSy..." class="w-full p-3 bg-gray-50 border border-gray-300 rounded-xl text-sm font-mono mb-3 focus:outline-none focus:border-amber-600">
+                
+                <div id="voice-key-feedback" class="hidden text-xs font-bold text-green-700 bg-green-50 p-2 rounded-lg mb-3 text-center"></div>
+
+                <div class="flex flex-col gap-2">
+                    <button onclick="saveAndTestOrusKey()" class="btn-elegant btn-olive py-3 text-base">
+                        Salvar e Testar Voz Orus 🔊
+                    </button>
+                    <button onclick="copyMagicShareLink()" class="w-full py-2.5 px-4 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-sm border border-amber-300 transition">
+                        🔗 Copiar Link Mágico p/ WhatsApp (Já com a Voz Ativa)
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -383,153 +409,592 @@
 
     <script>
         // =========================================================================
-        // 1. BANCO DE DADOS (27 LIÇÕES - OUVINDO A VOZ DE DEUS)
+        // 1. BANCO DE DADOS COMPLETO DOS 27 ESTUDOS E BORBOLETAS REAIS
         // =========================================================================
         const lessons = [
             {
                 id: 1, title: "A Bíblia Sagrada", verse: "João 17:17",
-                butterfly: "Borboleta Monarca", butterflyIcon: "🦋",
+                butterfly: "Borboleta Azul Morpho", butterflyIcon: "🦋",
                 summary: [
-                    "A Bíblia é uma biblioteca de 66 livros inspirados por Deus.",
-                    "Jesus é o personagem central de todas as Escrituras.",
-                    "O Espírito Santo nos guia para entendermos a Palavra."
+                    "A Bíblia é uma biblioteca divina com 66 livros escritos por cerca de 40 autores ao longo de 1.600 anos.",
+                    "Homens santos falaram da parte de Deus, movidos pelo Espírito Santo (2 Pedro 1:21).",
+                    "Jesus é o personagem central das Escrituras, e a Palavra de Deus é a Verdade que nos liberta."
                 ],
                 questions: [
-                    { q: "Segundo Jesus em João 17:17, o que é a verdade?", opts: ["A Palavra de Deus", "As tradições humanas", "As histórias antigas"], correct: 0 },
-                    { q: "Quem inspirou os profetas a escreverem a Bíblia?", opts: ["O Espírito Santo", "Anjos invisíveis", "A inteligência humana"], correct: 0 },
-                    { q: "Qual é o objetivo principal de estudarmos a Bíblia?", opts: ["Encontrar o caminho da salvação em Jesus", "Decorar histórias", "Ser mais inteligente que os outros"], correct: 0 },
-                    { q: "Toda a Bíblia é inspirada por Deus e útil para nos educar?", opts: ["Sim, toda a Escritura é inspirada por Deus", "Não, apenas o Novo Testamento", "Não, apenas os Salmos"], correct: 0 }
+                    { q: "Como Jesus considerava a Palavra de Deus em João 17:17?", opts: ["A Tua Palavra é a Verdade", "Apenas um livro de história", "Um livro difícil de entender"], correct: 0 },
+                    { q: "Quantos livros compõem a biblioteca da Bíblia Sagrada?", opts: ["66 livros", "40 livros", "100 livros"], correct: 0 },
+                    { q: "Quem guiou os profetas ao escreverem a Bíblia (2 Pedro 1:21)?", opts: ["O Espírito Santo", "A sabedoria humana", "Os reis da época"], correct: 0 },
+                    { q: "Qual é a maneira correta de estudar a Bíblia segundo Isaías 28:10?", opts: ["Comparando texto com texto, um pouco aqui e um pouco ali", "Lendo apenas um versículo isolado", "Estudando sem pedir ajuda a Deus"], correct: 0 }
                 ],
-                reflectionQ: "Qual destas decisões sobre a Palavra de Deus fala mais alto ao seu coração hoje?",
+                reflectionQ: "Sabendo que a Bíblia é a voz de Deus para o seu coração, qual decisão toca sua alma hoje?",
                 reflectionOpts: [
-                    "Desejo separar um tempo tranquilo todos os dias para ler a Bíblia.",
-                    "Aceito a Bíblia como a única regra para as decisões da minha vida.",
-                    "Vou pedir mais a direção do Espírito Santo antes de ler a Palavra."
+                    "Aceito toda a Bíblia como regra de fé e guia de amor para minha vida.",
+                    "Quero separar um momento tranquilo todos os dias para ouvir a voz de Deus na Bíblia.",
+                    "Desejo colocar em prática os ensinos de Jesus no meu dia a dia."
                 ]
             },
             {
                 id: 2, title: "A Beleza da Criação Divina", verse: "Gênesis 1:1",
-                butterfly: "Borboleta Azul Morpho", butterflyIcon: "🦋",
+                butterfly: "Borboleta Monarca Real", butterflyIcon: "🧡",
                 summary: [
-                    "Deus criou os céus e a Terra pelo poder de Sua Palavra.",
-                    "O Universo não surgiu por acaso, houve um planejamento inteligente.",
-                    "O ser humano foi feito à imagem de Deus, com muito amor."
+                    "Deus criou os céus e a Terra em seis dias literais pelo poder da Sua Palavra: Ele falou e tudo se fez.",
+                    "As três Pessoas da Divindade participaram da criação: Deus o Pai, Cristo o Filho e o Espírito Santo.",
+                    "O ser humano foi moldado com amor pelas mãos de Deus à Sua própria imagem e recebeu o Jardim do Éden."
                 ],
                 questions: [
-                    { q: "Como o Universo e a Terra foram formados?", opts: ["Pelo poder da Palavra de Deus", "Por uma grande explosão do acaso", "Por anjos"], correct: 0 },
-                    { q: "Em quantos dias Deus criou a vida no planeta Terra?", opts: ["Em seis dias literais", "Em milhões de anos", "Em um instante"], correct: 0 },
-                    { q: "De que maneira especial Deus criou o primeiro homem?", opts: ["Moldou do pó da terra e soprou a vida", "Ele apareceu na água", "Veio da evolução dos animais"], correct: 0 },
-                    { q: "Onde Deus colocou o primeiro casal para morar?", opts: ["No lindo Jardim do Éden", "Numa caverna fria", "Num castelo de pedras"], correct: 0 }
+                    { q: "Como Deus formou o Universo segundo o Salmo 33:6, 9?", opts: ["Pela Sua Palavra: Ele falou e tudo passou a existir", "Surgiu por acaso sozinho", "Levou milhões de anos sem planejar"], correct: 0 },
+                    { q: "Em quantos dias o Senhor fez os céus, a Terra e o mar (Êxodo 20:11)?", opts: ["Em seis dias e descansou no sétimo", "Em um único segundo", "Em trinta dias"], correct: 0 },
+                    { q: "Como Deus criou o primeiro homem e a primeira mulher?", opts: ["À Sua imagem, formando o homem do pó da terra e a mulher da costela", "Apenas falando de longe", "Eles vieram de outros animais"], correct: 0 },
+                    { q: "Qual presente especial Adão e Eva receberam de Deus?", opts: ["O lindo Jardim do Éden para cuidar e viver em paz", "Uma cidade de pedras", "Um deserto vazio"], correct: 0 }
                 ],
-                reflectionQ: "Olhando para as maravilhas que Deus criou, o que você deseja fazer?",
+                reflectionQ: "Você foi criada de forma especial pelas mãos de Deus. Como seu coração responde a esse amor?",
                 reflectionOpts: [
-                    "Quero dedicar mais tempo para admirar a natureza e a paz de Deus.",
-                    "Decido cuidar melhor do meu corpo, pois fui criada à imagem de Deus.",
-                    "Vou agradecer a Deus todos os dias pelo fôlego de vida que Ele me dá."
+                    "Creio no poder do meu Criador, que fez tudo com tanta beleza e propósito.",
+                    "Sou grata a Deus porque sou muito especial e amada por Ele.",
+                    "Quero conhecer cada dia mais o Deus que me criou."
                 ]
             },
             {
-                id: 3, title: "A Origem do Mal", verse: "Apocalipse 12:7",
-                butterfly: "Borboleta Coruja", butterflyIcon: "🦋",
+                id: 3, title: "A Origem do Mal", verse: "Apocalipse 12:7-9",
+                butterfly: "Borboleta Cauda-de-Andorinha", butterflyIcon: "💛",
                 summary: [
-                    "O mal começou no Céu com Lúcifer, um anjo perfeito que se rebelou.",
-                    "Satanás enganou Adão e Eva no jardim, trazendo o pecado à Terra.",
-                    "Jesus prometeu esmagar o mal e nos dá a Sua armadura para vencermos."
+                    "Deus não criou o mal; Lúcifer era um anjo perfeito, mas deixou o orgulho e a inveja entrarem em seu coração.",
+                    "No Éden, a serpente enganou o casal, trazendo a dor e a morte pela desobediência.",
+                    "Deus prometeu que Jesus (o Descendente da mulher) esmagaria a cabeça da serpente e nos daria a vitória!"
                 ],
                 questions: [
-                    { q: "Onde e com quem se originou o pecado?", opts: ["No Céu, com o anjo Lúcifer", "Na Terra, com os animais", "Deus criou o mal de propósito"], correct: 0 },
-                    { q: "O que levou Lúcifer a se rebelar contra Deus?", opts: ["O orgulho e o desejo de ser igual ao Altíssimo", "Ele queria mais estrelas", "Ele foi maltratado"], correct: 0 },
-                    { q: "Como Satanás conseguiu enganar Eva no Jardim do Éden?", opts: ["Usou uma serpente e mentiu sobre as consequências do pecado", "Usou a força bruta", "Ofereceu dinheiro"], correct: 0 },
-                    { q: "Como podemos vencer as tentações de Satanás hoje?", opts: ["Revestindo-nos da armadura de Deus e orando", "Lutando sozinhos", "Fugindo para as montanhas"], correct: 0 }
+                    { q: "Onde e como surgiu o mal no Universo (Ezequiel 28:15)?", opts: ["No coração de Lúcifer, um anjo criado perfeito que se rebelou por orgulho", "Deus criou o mal desde o início", "Surgiu nas estrelas"], correct: 0 },
+                    { q: "Que promessa de esperança Deus fez logo após Adão e Eva pecarem (Gênesis 3:15)?", opts: ["Que Jesus nasceria e derrotaria o domínio de Satanás", "Que não haveria mais salvação", "Que os anjos iriam embora"], correct: 0 },
+                    { q: "Contra quem o inimigo está irado nos últimos dias (Apocalipse 12:17)?", opts: ["Contra os filhos de Deus que guardam os Seus mandamentos", "Contra quem não estuda a Bíblia", "Contra ninguém"], correct: 0 },
+                    { q: "Como podemos vencer as ciladas do inimigo segundo Efésios 6:10-18?", opts: ["Revestindo-nos da armadura de Deus, com fé, Palavra e oração", "Confiando apenas em nós mesmos", "Tendo medo todos os dias"], correct: 0 }
                 ],
-                reflectionQ: "Sabendo que existe um inimigo espiritual, qual a sua decisão hoje?",
+                reflectionQ: "Diante da luta entre o bem e o mal, qual é a escolha do seu coração hoje?",
                 reflectionOpts: [
-                    "Decido me apegar mais a Jesus através da oração diária para estar protegida.",
-                    "Quero ler mais a Bíblia para não ser enganada pelas mentiras do inimigo.",
-                    "Vou entregar meus medos e fraquezas nas mãos poderosas de Deus."
+                    "Escolho ficar sempre ao lado de Jesus e da Sua Palavra protetora.",
+                    "Quero vestir a armadura de Deus todos os dias através da oração.",
+                    "Confio que Jesus já garantiu a vitória final para a minha vida."
                 ]
             },
             {
                 id: 4, title: "O Plano da Salvação", verse: "João 3:16",
-                butterfly: "Borboleta-Folha", butterflyIcon: "🦋",
+                butterfly: "Borboleta Rosa de Seda", butterflyIcon: "🌸",
                 summary: [
-                    "Todos nós erramos e o resultado do pecado é a morte.",
-                    "Por amor, Deus enviou Seu Filho Jesus para morrer em nosso lugar.",
-                    "A salvação é um presente que recebemos ao aceitar a Jesus."
+                    "Quando o ser humano pecou, Deus não o abandonou; Ele mesmo foi procurar Adão e Eva com amor.",
+                    "Jesus entregou Sua vida na cruz em nosso lugar para pagar a nossa dívida e nos dar a vida eterna.",
+                    "A salvação não depende de nossas obras, mas é um presente gratuito recebido pela fé em Cristo."
                 ],
                 questions: [
-                    { q: "O que Deus fez logo após o ser humano pecar e se esconder?", opts: ["Deus o procurou com amor para oferecer perdão", "Deus o abandonou para sempre", "Deus destruiu o mundo na mesma hora"], correct: 0 },
-                    { q: "O que Jesus fez por nós na cruz do Calvário?", opts: ["Carregou a culpa dos nossos pecados e morreu em nosso lugar", "Deu apenas um bom exemplo de vida", "Mostrou que o pecado não importa"], correct: 0 },
-                    { q: "Nós podemos comprar a salvação com boas obras?", opts: ["Não, a salvação é um presente da graça de Deus mediante a fé", "Sim, quem fizer mais coisas boas compra a entrada", "Sim, pagando um valor na igreja"], correct: 0 },
-                    { q: "O que é necessário fazer para receber a salvação?", opts: ["Aceitar a Jesus como Salvador pessoal e Seu sacrifício", "Ser uma pessoa perfeita sem nenhum erro", "Apenas saber que Deus existe"], correct: 0 }
+                    { q: "Qual foi a atitude de Deus logo após o ser humano pecar no Éden (Gênesis 3:8-9)?", opts: ["Procurou o ser humano com amor e ofereceu um plano de resgate", "Desistiu da humanidade", "Não Se importou"], correct: 0 },
+                    { q: "O que Jesus fez por nós na cruz do Calvário (1 Pedro 2:24)?", opts: ["Carregou em Seu corpo os nossos pecados para nos salvar", "Apenas deu um bom exemplo", "Ficou livre de sofrer"], correct: 0 },
+                    { q: "Quem tem poder para transformar o nosso coração (João 8:32)?", opts: ["O Espírito Santo e o conhecimento da Verdade", "Apenas a nossa força de vontade", "O passar do tempo"], correct: 0 },
+                    { q: "A salvação pode ser comprada por nossas boas obras (Efésios 2:8-9)?", opts: ["Não, ela é um dom gratuito da graça de Deus mediante a fé", "Sim, quem faz boas obras paga a salvação", "Depende de merecimento"], correct: 0 }
                 ],
-                reflectionQ: "Diante do sacrifício infinito de Jesus por você, o que você escolhe?",
+                reflectionQ: "Jesus entregou tudo na cruz por amor a você. Como você deseja responder a esse cuidado?",
                 reflectionOpts: [
-                    "Aceito o presente maravilhoso da salvação e entrego minha vida a Cristo.",
-                    "Quero parar de tentar me salvar sozinha e descansar na graça de Jesus.",
-                    "Vou agradecer todos os dias pelo amor incondicional que recebi na cruz."
+                    "Entrego meu coração a Jesus e O aceito como meu único Salvador.",
+                    "Agradeço a Deus porque meu passado é perdoado pelo sangue de Cristo.",
+                    "Peço que o Espírito Santo transforme minha vida todos os dias."
                 ]
             },
             {
                 id: 5, title: "Fé, Arrependimento e Confissão", verse: "1 João 1:9",
-                butterfly: "Borboleta Cauda-de-Andorinha", butterflyIcon: "🦋",
+                butterfly: "Borboleta Branca da Paz", butterflyIcon: "🤍",
                 summary: [
-                    "A fé agrada a Deus e cresce quando ouvimos a Sua Palavra.",
-                    "O arrependimento é a tristeza pelo pecado e a decisão de mudar.",
-                    "Quando confessamos, Deus perdoa e apaga nossos erros no fundo do mar."
+                    "A fé é a certeza do cuidado de Deus e cresce enquanto ouvimos a Sua Palavra (Romanos 10:17).",
+                    "A bondade de Deus nos leva ao arrependimento sincero e à confissão direta dos erros a Ele.",
+                    "Quando confessamos nossos pecados, Deus nos perdoa completamente e os lança nas profundezas do mar!"
                 ],
                 questions: [
-                    { q: "Como a nossa fé em Deus pode se desenvolver e crescer (Romanos 10:17)?", opts: ["Ouvindo e estudando a Palavra de Deus", "Esperando o tempo passar", "Fazendo promessas"], correct: 0 },
-                    { q: "O que nos leva a sentir o verdadeiro arrependimento?", opts: ["A bondade e o amor de Deus tocando nosso coração", "O medo de ser castigado pelas pessoas", "A vontade de parecer perfeito"], correct: 0 },
-                    { q: "Para quem devemos confessar nossos pecados em busca de perdão?", opts: ["Diretamente a Deus, através de Jesus Cristo", "Apenas para nós mesmos", "Para qualquer desconhecido"], correct: 0 },
-                    { q: "O que Deus faz com nossos pecados quando os confessamos de coração?", opts: ["Ele nos perdoa, nos purifica e lança os pecados nas profundezas do mar", "Ele anota num caderno para cobrar depois", "Ele conta para os anjos e ri"], correct: 0 }
+                    { q: "Como a nossa fé se desenvolve e cresce segundo Romanos 10:17?", opts: ["Ouvindo e meditando na Palavra de Deus", "Esperando sem ler a Bíblia", "Apenas conversando com amigos"], correct: 0 },
+                    { q: "O que nos conduz ao verdadeiro arrependimento (Romanos 2:4)?", opts: ["A bondade e o amor paciente de Deus", "Apenas o medo do castigo", "A tristeza sem esperança"], correct: 0 },
+                    { q: "O que Deus faz quando confessamos nossos pecados a Ele (1 João 1:9; Miquéias 7:19)?", opts: ["Perdoa, purifica e lança nossos pecados nas profundezas do mar", "Continua cobrando o erro", "Perdoa apenas uma parte"], correct: 0 },
+                    { q: "Quem é o único Mediador a quem devemos confessar nossos pecados (1 Timóteo 2:5)?", opts: ["Jesus Cristo", "Qualquer ser humano", "Os anjos"], correct: 0 }
                 ],
-                reflectionQ: "Sentindo a leveza do perdão de Deus, qual é o seu desejo hoje?",
+                reflectionQ: "Sentir o perdão de Deus tira todo o peso da alma. Qual frase expressa o seu desejo agora?",
                 reflectionOpts: [
-                    "Quero abrir meu coração a Deus e confessar tudo o que me afasta dEle.",
-                    "Decido não carregar mais o peso da culpa, aceitando o perdão de Cristo.",
-                    "Desejo ter um coração perdoador com as pessoas, assim como Deus me perdoou."
+                    "Quero experimentar a paz profunda que vem do perdão de Jesus.",
+                    "Creio que Deus lança meus erros passados nas profundezas do mar.",
+                    "Desejo abrir meu coração em oração sincera sempre que precisar de perdão."
+                ]
+            },
+            {
+                id: 6, title: "Sinais da Volta de Cristo", verse: "Mateus 24:14",
+                butterfly: "Borboleta Cintilante da Aurora", butterflyIcon: "✨",
+                summary: [
+                    "Jesus anunciou sinais claros na sociedade, na natureza e na religião mostrando que Seu retorno está próximo.",
+                    "Para não cairmos em enganos, precisamos conferir todo ensino com toda a Bíblia Sagrada.",
+                    "O grande sinal final é a pregação do verdadeiro Evangelho a todo o mundo (Mateus 24:14)."
+                ],
+                questions: [
+                    { q: "Que grande sinal positivo precede a volta de Jesus (Mateus 24:14)?", opts: ["A pregação do evangelho do Reino em todo o mundo", "A paz completa feita pelos homens", "O fim das tempestades"], correct: 0 },
+                    { q: "Como podemos saber se uma doutrina ou ensino vem mesmo de Deus (Isaías 8:20)?", opts: ["Provando se está em harmonia com toda a Bíblia Sagrada", "Olhando apenas se há prodígios e emoção", "Seguindo a maioria"], correct: 0 },
+                    { q: "Por que Jesus ainda aguarda um pouco antes de voltar (2 Pedro 3:9)?", opts: ["Porque Ele é longânimo e não quer que ninguém se perca", "Porque esqueceu a promessa", "Porque o Céu está longe"], correct: 0 },
+                    { q: "Qual deve ser a nossa atitude ao ver os sinais se cumprindo (Lucas 21:28)?", opts: ["Ergueu a cabeça com esperança, buscando a Deus em primeiro lugar", "Ficar com medo e desespero", "Ignorar os sinais"], correct: 0 }
+                ],
+                reflectionQ: "Sabendo que a volta de Jesus está próxima, o que seu coração escolhe viver hoje?",
+                reflectionOpts: [
+                    "Quero olhar para o futuro com esperança e paz, pois meu Salvador vem.",
+                    "Desejo buscar a Deus em primeiro lugar todos os dias da minha vida.",
+                    "Quero firmar minha fé unicamente na verdade da Bíblia."
+                ]
+            },
+            {
+                id: 7, title: "A Segunda Vinda de Cristo", verse: "João 14:1-3",
+                butterfly: "Borboleta Dourada do Sol", butterflyIcon: "🌟",
+                summary: [
+                    "Jesus prometeu: 'Voltarei e vos levarei para Mim mesmo' (João 14:1-3).",
+                    "Sua vinda não será secreta nem invisível: todo olho O verá nas nuvens com milhares de anjos (Apocalipse 1:7).",
+                    "Os justos que dormiam ressuscitarão incorruptíveis e subiremos juntos para encontrar o Senhor nos ares!"
+                ],
+                questions: [
+                    { q: "Qual promessa consoladora Jesus deixou em João 14:1-3?", opts: ["Que foi preparar lugar no Céu e voltará para nos buscar", "Que nunca mais voltaria à Terra", "Que moraríamos aqui para sempre no sofrimento"], correct: 0 },
+                    { q: "De que maneira Jesus voltará segundo Mateus 24:27, 30 e Apocalipse 1:7?", opts: ["De forma pessoal, visível a todo olho e gloriosa nas nuvens", "De forma secreta e silenciosa", "Apenas no coração"], correct: 0 },
+                    { q: "O que acontecerá com os salvos ao som da trombeta na volta de Cristo (1 Tessalonicenses 4:16-17)?", opts: ["Os mortos em Cristo ressuscitarão e juntos seremos arrebatados para o Céu", "Ficarão sozinhos na Terra", "Não ouvirão o chamado"], correct: 0 },
+                    { q: "Qual será o cântico dos salvos naquele grande dia (Isaías 25:9)?", opts: ["Eis que este é o nosso Deus, em quem esperávamos, e Ele nos salvará!", "Não sabemos quem está vindo", "Preferíamos ficar aqui"], correct: 0 }
+                ],
+                reflectionQ: "Imagine ver Jesus voltando nas nuvens com amor nos olhos para buscar você. Qual é o seu desejo?",
+                reflectionOpts: [
+                    "Quero estar pronta para abraçar Jesus naquele dia tão feliz.",
+                    "Confio na promessa de que Jesus está preparando um lar para mim.",
+                    "Desejo caminhar com Cristo hoje para viver com Ele eternamente."
+                ]
+            },
+            {
+                id: 8, title: "O Milênio Bíblico", verse: "Apocalipse 20:6",
+                butterfly: "Borboleta Imperial Púrpura", butterflyIcon: "💜",
+                summary: [
+                    "Após a volta de Jesus, os salvos viverão e reinarão com Cristo no Céu durante mil anos (Apocalipse 20:4, 6).",
+                    "Durante os mil anos, a Terra ficará desolada e vazia, e Satanás ficará preso às circunstâncias sem ninguém para tentar.",
+                    "No final dos mil anos, a Nova Jerusalém descerá e o mal será destruído para sempre, purificando o Universo."
+                ],
+                questions: [
+                    { q: "Onde estarão os salvos durante o período dos mil anos (Apocalipse 20:4, 6)?", opts: ["No Céu, reinando com Cristo", "Vivendo na Terra destruída", "Dormindo no espaço"], correct: 0 },
+                    { q: "Como ficará o planeta Terra durante os mil anos (Jeremias 4:23-26)?", opts: ["Sem forma, vazia e sem nenhum habitante humano vivo", "Cheia de cidades funcionando", "Em festa"], correct: 0 },
+                    { q: "O que significa a prisão de Satanás durante os mil anos (Apocalipse 20:1-3)?", opts: ["Ele ficará preso na Terra desolada sem ter ninguém a quem enganar", "Ficará trancado com cadeado de ferro", "Estará no Céu"], correct: 0 },
+                    { q: "O que acontecerá no fim dos mil anos (Apocalipse 21:2; 20:9)?", opts: ["A Cidade Santa descerá do Céu e Deus dará fim definitivo ao pecado e ao mal", "O pecado continuará existindo", "Satanás governará a Terra"], correct: 0 }
+                ],
+                reflectionQ: "Deus vai pôr um ponto final em toda maldade e injustiça. O que isso desperta em seu coração?",
+                reflectionOpts: [
+                    "Sinto paz em saber que o mal terá um fim definitivo e justo.",
+                    "Quero passar os mil anos no Céu ao lado do meu Salvador Jesus.",
+                    "Decido fazer parte dos seguidores fiéis de Deus desde agora."
+                ]
+            },
+            {
+                id: 9, title: "A Verdade sobre a Morte", verse: "João 11:11-14",
+                butterfly: "Borboleta Asa-de-Cristal", butterflyIcon: "🩵",
+                summary: [
+                    "Na Criação, o pó da terra + o fôlego de vida formaram a alma vivente (a pessoa viva - Gênesis 2:7).",
+                    "Jesus ensinou que a morte é como um sono tranquilo e sem sofrimento até o dia da ressurreição.",
+                    "Os mortos não sabem de coisa alguma (Eclesiastes 9:5) e acordarão gloriosos ao chamado de Jesus na Sua vinda!"
+                ],
+                questions: [
+                    { q: "Segundo Gênesis 2:7, o que é a 'alma vivente' na Bíblia?", opts: ["A união do corpo (pó da terra) com o fôlego de vida dado por Deus", "Um espírito separado que voa sozinho", "Apenas um pensamento"], correct: 0 },
+                    { q: "A que Jesus comparou a morte quando falou sobre Lázaro (João 11:11)?", opts: ["A um sono tranquilo do qual Ele vai nos despertar", "A uma viagem imediata", "A uma reencarnação"], correct: 0 },
+                    { q: "Os mortos têm consciência ou sabem do que acontece hoje (Eclesiastes 9:5)?", opts: ["Não sabem coisa nenhuma; descansam em paz na sepultura", "Sabem de tudo e conversam conosco", "Ficam vagando pela Terra"], correct: 0 },
+                    { q: "Quando os justos que morreram receberão a imortalidade (1 Coríntios 15:51-53)?", opts: ["Na ressurreição, na Segunda Vinda de Jesus", "No instante da morte", "Nunca"], correct: 0 }
+                ],
+                reflectionQ: "Saber que a morte é apenas um breve sono até o chamado de Jesus traz consolo. Como você guarda isso?",
+                reflectionOpts: [
+                    "Encontro paz e consolo na promessa da ressurreição que Jesus garantiu.",
+                    "Confio na Bíblia e fico livre de medos e enganos sobre a morte.",
+                    "Quero viver em comunhão com Cristo para receber a vida eterna na Sua vinda."
+                ]
+            },
+            {
+                id: 10, title: "A Nova Terra", verse: "Apocalipse 21:4",
+                butterfly: "Borboleta Esmeralda do Éden", butterflyIcon: "💚",
+                summary: [
+                    "Deus criará um novo céu e uma Nova Terra onde habita a justiça e a paz eterna (2 Pedro 3:13).",
+                    "Na Nova Terra não haverá mais morte, nem pranto, nem luto, nem dor, pois Deus enxugará toda lágrima!",
+                    "Construiremos casas, plantaremos jardins, os animais serão mansos e de sábado a sábado adoraremos ao Senhor."
+                ],
+                questions: [
+                    { q: "O que Deus prometeu criar após o milênio (2 Pedro 3:13)?", opts: ["Novos céus e Nova Terra, onde habita a justiça", "Um lugar cinza e vazio", "Apenas nuvens"], correct: 0 },
+                    { q: "O que deixará de existir para sempre na Nova Terra (Apocalipse 21:4)?", opts: ["A morte, o choro, o luto, a doença e a dor", "A alegria e a música", "As flores e os rios"], correct: 0 },
+                    { q: "Como viverão os animais na Nova Terra (Isaías 65:25)?", opts: ["Em total paz: o lobo e o cordeiro pastarão juntos e o leão será manso", "Continuarão ferozes", "Não existirão animais"], correct: 0 },
+                    { q: "Com que frequência os salvos irão adorar a Deus na Nova Terra (Isaías 66:22-23)?", opts: ["De uma lua nova a outra e de um sábado a outro", "Apenas a cada dez anos", "Nunca"], correct: 0 }
+                ],
+                reflectionQ: "Um lar sem dor e sem lágrimas espera por você. Qual decisão brota em seu coração?",
+                reflectionOpts: [
+                    "Creio de todo o coração que Jesus está preparando esse lar lindo para mim.",
+                    "Quero amar a Jesus e guardar Seus mandamentos rumo à Nova Terra.",
+                    "A esperança da Nova Terra renova minhas forças para vencer os dias difíceis."
+                ]
+            },
+            {
+                id: 11, title: "Salvação pela Graça", verse: "Efésios 2:8",
+                butterfly: "Borboleta Rubi da Graça", butterflyIcon: "❤️",
+                summary: [
+                    "Em toda a Bíblia (Antigo e Novo Testamento), a salvação sempre foi unicamente pela graça de Deus.",
+                    "Jesus morreu na cruz por nós; aceitamos essa graça crendo, arrependendo-nos, confessando e seguindo Seus passos.",
+                    "A obediência aos mandamentos e o batismo não compram a salvação: são o fruto de amor de quem já foi salvo!"
+                ],
+                questions: [
+                    { q: "Como somos salvos de acordo com Efésios 2:8?", opts: ["Pela graça de Deus, por meio da fé, como um dom gratuito", "Pelos nossos próprios méritos", "Por riquezas materiais"], correct: 0 },
+                    { q: "Qual é o papel da obediência na vida de quem foi salvo pela graça?", opts: ["É a confirmação e o fruto de amor de quem entregou a vida a Jesus", "É uma forma de pagar a Deus", "Não precisamos mais obedecer a Deus"], correct: 0 },
+                    { q: "O que significa perseverar na caminhada cristã (Mateus 24:13)?", opts: ["Continuar firme em comunhão com Deus pela Bíblia e oração até o fim", "Seguir a Jesus apenas por uma semana", "Desistir diante das dificuldades"], correct: 0 },
+                    { q: "Quais passos demonstram que aceitamos a salvação em Cristo?", opts: ["Crer, arrepender-se, confessar, obedecer por amor, batizar-se e perseverar", "Apenas dizer que acredita sem mudar nada", "Viver longe de Deus"], correct: 0 }
+                ],
+                reflectionQ: "A graça de Jesus abraça você hoje gratuitamente. Qual passo você deseja confirmar?",
+                reflectionOpts: [
+                    "Aceito com gratidão a salvação pela graça maravilhosa de Jesus.",
+                    "Quero viver uma vida nova de amor, obediência e comunhão com Deus.",
+                    "Desejo perseverar com Cristo todos os dias da minha caminhada."
+                ]
+            },
+            {
+                id: 12, title: "O Santuário de Deus", verse: "Hebreus 8:1-2",
+                butterfly: "Borboleta Dourada do Altar", butterflyIcon: "💛",
+                summary: [
+                    "No passado, Deus pediu a Moisés que construísse um santuário terrestre que ensinava o plano da salvação.",
+                    "Os sacrifícios de cordeiros apontavam para Jesus na cruz; quando Cristo morreu, o véu do templo se rasgou.",
+                    "Hoje, Jesus atua no verdadeiro Santuário que está no Céu como nosso Sumo Sacerdote e Intercessor!"
+                ],
+                questions: [
+                    { q: "Para que Deus pediu a Moisés que fizesse um santuário (Êxodo 25:8)?", opts: ["Para habitar no meio do Seu povo e ensinar o plano da salvação", "Apenas para enfeitar o deserto", "Para guardar ouro"], correct: 0 },
+                    { q: "Quem o cordeiro sacrificado no santuário terrestre representava?", opts: ["Jesus Cristo, o Cordeiro de Deus que morreria por nós", "Os sacerdotes humanos", "O rei de Israel"], correct: 0 },
+                    { q: "O que ficava guardado dentro da Arca da Aliança no Lugar Santíssimo?", opts: ["As tábuas dos Dez Mandamentos escritas por Deus", "Armas de guerra", "Livros de história"], correct: 0 },
+                    { q: "Em qual santuário Jesus ministra em nosso favor hoje (Hebreus 8:1-2)?", opts: ["No verdadeiro Santuário Celestial, erguido pelo Senhor", "Em um templo terrestre", "Em lugar nenhum"], correct: 0 }
+                ],
+                reflectionQ: "Neste exato momento, Jesus intercede por você no Santuário do Céu. Como você se sente?",
+                reflectionOpts: [
+                    "Sinto segurança ao saber que Jesus cuida de mim no Santuário Celestial.",
+                    "Reconheço Jesus Cristo como meu único Mediador e Sumo Sacerdote.",
+                    "Aproximo-me de Deus com confiança em minhas orações diárias."
+                ]
+            },
+            {
+                id: 13, title: "O Juízo Divino", verse: "1 João 2:1",
+                butterfly: "Borboleta Safira Real", butterflyIcon: "💙",
+                summary: [
+                    "A profecia das 2.300 tardes e manhãs (Daniel 8:14) apontou para 1844, quando iniciou a purificação do Santuário Celestial.",
+                    "Deus julga com justiça e amor, tendo a Sua Lei (os Dez Mandamentos) como norma eterna (Tiago 2:12).",
+                    "Para quem entrega a vida a Cristo, não há condenação (Romanos 8:1), pois Jesus é o nosso Advogado fiel!"
+                ],
+                questions: [
+                    { q: "Que profecia bíblica revelou o início do ministério de juízo no Céu em 1844 (Daniel 8:14)?", opts: ["A profecia das 2.300 tardes e manhãs (anos)", "A profecia de 7 dias", "A profecia de 100 anos"], correct: 0 },
+                    { q: "Quem é o nosso Advogado que nos defende diante do Pai (1 João 2:1)?", opts: ["Jesus Cristo, o Justo", "Um anjo qualquer", "Nossos próprios argumentos"], correct: 0 },
+                    { q: "Qual é a norma usada no julgamento divino segundo Tiago 2:10-12?", opts: ["A Lei da Liberdade (os Dez Mandamentos)", "As tradições humanas", "A opinião da maioria"], correct: 0 },
+                    { q: "Qual é a promessa para aqueles que estão unidos a Cristo Jesus (Romanos 8:1)?", opts: ["Nenhuma condenação há para os que estão em Cristo Jesus!", "Ficarão com medo do juízo", "Não terão certeza da salvação"], correct: 0 }
+                ],
+                reflectionQ: "Ter Jesus como seu Advogado pessoal tira todo o medo do julgamento. Qual é a sua escolha?",
+                reflectionOpts: [
+                    "Constituo Jesus Cristo como o Advogado e Salvador da minha vida.",
+                    "Descanso na promessa de que em Cristo não há condenação para mim.",
+                    "Desejo viver em harmonia com a Palavra e os mandamentos de Deus."
+                ]
+            },
+            {
+                id: 14, title: "As Leis na Bíblia", verse: "Mateus 5:17",
+                butterfly: "Borboleta Lírio do Vale", butterflyIcon: "🤍",
+                summary: [
+                    "Na Bíblia há distinção clara entre a Lei Cerimonial (sacrifícios do santuário) e a Lei Moral (os Dez Mandamentos).",
+                    "A Lei Cerimonial apontava para a cruz e foi cancelada quando Jesus morreu como o verdadeiro Cordeiro.",
+                    "Já a Lei Moral (os Dez Mandamentos) foi escrita pelo dedo de Deus em pedra e permanece para sempre!"
+                ],
+                questions: [
+                    { q: "O que aconteceu com a Lei Cerimonial (de sacrifícios de animais) na morte de Cristo (Efésios 2:15)?", opts: ["Cumpriu seu propósito e foi cancelada na cruz", "Continua exigindo sacrifícios hoje", "Nunca existiu"], correct: 0 },
+                    { q: "O que Jesus afirmou sobre a Lei Moral em Mateus 5:17?", opts: ["Não penseis que vim revogar a Lei; não vim para revogar, vim para cumprir", "Que os Dez Mandamentos acabaram", "Que podemos esquecer a Lei"], correct: 0 },
+                    { q: "A nossa fé em Jesus anula os Dez Mandamentos (Romanos 3:31)?", opts: ["De maneira nenhuma! Antes, pela fé confirmamos a Lei", "Sim, a fé substitui a obediência", "Anula metade dos mandamentos"], correct: 0 },
+                    { q: "Como o apóstolo João define o amor a Deus em 1 João 5:3?", opts: ["Que guardemos os Seus mandamentos, e os Seus mandamentos não são penosos", "Apenas sentir emoção sem obedecer", "Seguir regras humanas"], correct: 0 }
+                ],
+                reflectionQ: "Os mandamentos de Deus são cercas de amor para proteger nossa felicidade. Como você os recebe?",
+                reflectionOpts: [
+                    "Entendo que a Lei dos Dez Mandamentos é eterna e reflete o amor de Deus.",
+                    "Quero obedecer a Deus não para ser salva, mas porque já fui amada e salva por Jesus.",
+                    "Peço a força do Espírito Santo para viver os mandamentos com alegria."
+                ]
+            },
+            {
+                id: 15, title: "A Lei Moral (Os 10 Mandamentos)", verse: "Mateus 22:37-40",
+                butterfly: "Borboleta Ametista Real", butterflyIcon: "💜",
+                summary: [
+                    "Os Dez Mandamentos foram escritos pelo próprio Deus (Êxodo 31:18) e resumem-se em amar a Deus e ao próximo.",
+                    "Deus não muda (Malaquias 3:6) e nunca autorizou seres humanos a alterarem Sua santa Lei.",
+                    "Por meio do Espírito Santo, Deus escreve a Sua lei de amor dentro do nosso coração (Jeremias 31:33)."
+                ],
+                questions: [
+                    { q: "Quem é o Autor que escreveu os Dez Mandamentos em duas tábuas de pedra (Êxodo 31:18)?", opts: ["O próprio Deus, com o Seu dedo", "Moisés por conta própria", "Os líderes religiosos"], correct: 0 },
+                    { q: "Em quais dois grandes princípios Jesus resumiu os Dez Mandamentos (Mateus 22:37-40)?", opts: ["Amar a Deus sobre todas as coisas e amar ao próximo como a si mesmo", "Buscar riquezas e fama", "Apenas fazer sacrifícios"], correct: 0 },
+                    { q: "O que o apóstolo Paulo escreveu sobre a Lei de Deus em Romanos 7:12?", opts: ["A Lei é santa, e o mandamento é santo, justo e bom", "A Lei é antiga e ruim", "A Lei não tem valor"], correct: 0 },
+                    { q: "Qual princípio bíblico devemos seguir quando tradições humanas contrariam a Lei de Deus (Atos 5:29)?", opts: ["Importa obedecer antes a Deus do que aos homens", "Seguir a tradição para agradar a todos", "Deixar a Bíblia de lado"], correct: 0 }
+                ],
+                reflectionQ: "Deus promete escrever a Lei de amor dEle em sua mente e coração. Qual é a sua resposta?",
+                reflectionOpts: [
+                    "Peço que o Senhor escreva Seus mandamentos de amor dentro do meu coração.",
+                    "Escolho colocar a Palavra de Deus acima de qualquer tradição humana.",
+                    "Creio que os Dez Mandamentos são um guia seguro de paz para minha vida."
+                ]
+            },
+            {
+                id: 16, title: "O Mandamento Esquecido", verse: "Êxodo 20:8-11",
+                butterfly: "Borboleta Pôr-do-Sol Dourado", butterflyIcon: "🧡",
+                summary: [
+                    "No quarto mandamento, Deus diz: 'Lembra-te do dia de sábado, para o santificar... o sétimo dia é o sábado do Senhor'.",
+                    "O Sábado foi criado, abençoado e santificado por Deus no Éden para toda a humanidade, antes de existir pecado.",
+                    "Jesus guardava o Sábado (Lucas 4:16), os apóstolos guardavam, e na Nova Terra todos adoraremos de sábado a sábado!"
+                ],
+                questions: [
+                    { q: "Quando e por quem o dia de Sábado foi instituído (Gênesis 2:1-3)?", opts: ["Por Deus na criação do mundo, no Jardim do Éden", "Pelos judeus no Monte Sinai", "Pelos apóstolos"], correct: 0 },
+                    { q: "Qual dia da semana Jesus costumava guardar durante Seu ministério na Terra (Lucas 4:16)?", opts: ["O Sábado, conforme o Seu costume", "O domingo", "A sexta-feira"], correct: 0 },
+                    { q: "Que dia os apóstolos e primeiros cristãos continuaram observando após a ressurreição (Atos 17:2; 18:4)?", opts: ["O Sábado", "Mudaram para o domingo", "Não guardavam dia nenhum"], correct: 0 },
+                    { q: "O que motiva o cristão salvo pela graça a guardar o santo Sábado?", opts: ["O amor a Jesus e o desejo de ter comunhão especial com o Criador", "A tentativa de comprar a salvação", "Apenas um costume formal"], correct: 0 }
+                ],
+                reflectionQ: "O Sábado é um presente de descanso e paz feito por Deus para você. Como seu coração o recebe?",
+                reflectionOpts: [
+                    "Desejo lembrar e santificar o Sábado assim como meu Mestre Jesus fazia.",
+                    "Aceito o convite de Deus para descansar em Seus braços a cada Sábado.",
+                    "Peço a bênção e a direção de Deus para honrar o Seu santo dia."
+                ]
+            },
+            {
+                id: 17, title: "Do Sábado para o Domingo", verse: "Atos 5:29",
+                butterfly: "Borboleta Guardiã da Fidelidade", butterflyIcon: "🦋",
+                summary: [
+                    "Na Bíblia não há nenhum mandamento ordenando a guarda do domingo (primeiro dia da semana).",
+                    "A profecia de Daniel 7:25 avisou que na história tentariam 'mudar os tempos e a lei'.",
+                    "A mudança para o domingo foi feita por decretos humanos (como o de Constantino em 321 d.C.), mas nossa fidelidade pertence a Deus e à Bíblia!"
+                ],
+                questions: [
+                    { q: "Existe algum texto na Bíblia ordenando mudar a guarda do Sábado para o domingo?", opts: ["Não, nenhum texto bíblico autoriza essa mudança", "Sim, nos Evangelhos", "Sim, nas cartas de Paulo"], correct: 0 },
+                    { q: "Qual é o verdadeiro símbolo bíblico da morte e ressurreição de Jesus (Romanos 6:3-5)?", opts: ["O Batismo por imersão", "A guarda do domingo", "Uma festa anual"], correct: 0 },
+                    { q: "Quem decretou oficialmente a guarda do domingo no ano 321 d.C.?", opts: ["O imperador romano Constantino, unindo costumes pagãos à tradição", "Jesus Cristo", "O apóstolo João"], correct: 0 },
+                    { q: "Entre os preceitos de homens e o mandamento de Deus, qual deve ser nossa escolha (Marcos 7:7; Atos 5:29)?", opts: ["Obedecer a Deus e à Sua Palavra acima das tradições humanas", "Seguir o costume da maioria", "Tanto faz"], correct: 0 }
+                ],
+                reflectionQ: "Jesus convida você a seguir a verdade bíblica com coragem e amor. Qual é a sua decisão?",
+                reflectionOpts: [
+                    "Escolho ficar ao lado da Bíblia e guardar o Sábado que Deus abençoou.",
+                    "Quero demonstrar meu amor a Jesus sendo fiel à Sua Palavra.",
+                    "Confio que Deus me dará sabedoria e paz para seguir os passos de Cristo."
+                ]
+            },
+            {
+                id: 18, title: "Princípios de Saúde", verse: "1 Coríntios 6:19-20",
+                butterfly: "Borboleta Verde Vitalidade", butterflyIcon: "💚",
+                summary: [
+                    "Nosso corpo é o santuário do Espírito Santo (1 Coríntios 6:19-20), e Deus deseja que tenhamos saúde e paz mental.",
+                    "A alimentação original criada por Deus prioriza frutas, grãos, verduras, legumes e água pura.",
+                    "Por amor a nós, Deus nos orienta a evitar carnes imundas (Levítico 11), bebidas alcoólicas e tudo o que prejudica a saúde."
+                ],
+                questions: [
+                    { q: "Como a Bíblia chama o nosso corpo em 1 Coríntios 6:19-20?", opts: ["Templo (Santuário) do Espírito Santo", "Apenas matéria sem importância", "Algo separado da vida espiritual"], correct: 0 },
+                    { q: "Por que cuidar da saúde física ajuda na nossa caminhada com Deus?", opts: ["Porque uma mente saudável compreende e ouve com mais clareza a voz do Espírito Santo", "Para nos acharmos melhores que os outros", "Não tem relação"], correct: 0 },
+                    { q: "O que a Bíblia ensina sobre bebidas alcoólicas e substâncias nocivas (Provérbios 20:1)?", opts: ["Que não devemos utilizá-las, pois prejudicam o templo do Espírito", "Que são recomendadas", "Que não fazem mal"], correct: 0 },
+                    { q: "Como Deus trata o tempo em que ainda não conhecíamos essas orientações (Atos 17:30)?", opts: ["Deus não leva em conta os tempos da ignorância e nos ajuda a começar hoje", "Deus fica zangado", "Não há como mudar"], correct: 0 }
+                ],
+                reflectionQ: "Cuidar da saúde é um ato de gratidão ao Criador. Qual escolha toca o seu coração hoje?",
+                reflectionOpts: [
+                    "Reconheço com alegria que meu corpo é morada do Espírito Santo.",
+                    "Desejo adotar hábitos mais saudáveis e naturais no meu dia a dia.",
+                    "Peço a ajuda de Deus para cuidar bem da minha saúde física e mental."
+                ]
+            },
+            {
+                id: 19, title: "O Dom de Profecia", verse: "Apocalipse 19:10",
+                butterfly: "Borboleta Mensageira Celeste", butterflyIcon: "🩵",
+                summary: [
+                    "Deus se comunica com Seus filhos através dos profetas e prometeu que esse dom estaria na Sua igreja nos últimos dias.",
+                    "A Bíblia nos ensina a provar os profetas: seus ensinos devem exaltar a Cristo e estar 100% de acordo com a Bíblia e a Lei.",
+                    "Nos tempos modernos, o ministério de Ellen G. White atua como uma luz menor que conduz os leitores à luz maior: a Bíblia!"
+                ],
+                questions: [
+                    { q: "Quais são as duas marcas da igreja remanescente em Apocalipse 12:17 e 19:10?", opts: ["Guardar os mandamentos de Deus e ter o testemunho de Jesus (Espírito de Profecia)", "Fazer apenas festas", "Rejeitar os profetas"], correct: 0 },
+                    { q: "Como podemos testar se um profeta é verdadeiro segundo Isaías 8:20 e Mateus 7:16?", opts: ["Se falar de acordo com a Bíblia e a Lei de Deus, exaltar a Cristo e tiver bons frutos", "Apenas se falar bonito", "Se cobrar pelas visões"], correct: 0 },
+                    { q: "Na Bíblia, mulheres também foram escolhidas por Deus como profetisas?", opts: ["Sim! Como Débora, Miriã, Hulda, Ana e as filhas de Filipe", "Não, nenhuma mulher", "Apenas reis"], correct: 0 },
+                    { q: "Qual é o conselho de 2 Crônicas 20:20 para o povo de Deus?", opts: ["Crede no Senhor vosso Deus e estareis seguros; crede nos Seus profetas e sereis bem-sucedidos", "Desprezai as profecias", "Não leiam nada"], correct: 0 }
+                ],
+                reflectionQ: "Deus nunca deixou Seu povo sem orientação segura. Como você acolhe esse cuidado divino?",
+                reflectionOpts: [
+                    "Agradeço a Deus por continuar guiando Sua igreja através do dom de profecia.",
+                    "Desejo ler livros espirituais inspiradores que me aproximem mais da Bíblia.",
+                    "Quero firmar minha fé na Palavra de Deus e nas orientações do Espírito Santo."
+                ]
+            },
+            {
+                id: 20, title: "O Dízimo: Fidelidade e Gratidão", verse: "Malaquias 3:10",
+                butterfly: "Borboleta Ouro de Ofir", butterflyIcon: "💛",
+                summary: [
+                    "Deus é o Criador e Mantenedor de tudo; dEle vêm a nossa vida, saúde e sustento diário.",
+                    "O dízimo (10% de nossas rendas) pertence ao Senhor e a devolução fiel é um ato de gratidão e confiança.",
+                    "Na Bíblia, o dízimo é destinado exclusivamente para o sustento do ministério que prega o Evangelho no mundo todo."
+                ],
+                questions: [
+                    { q: "Por que todas as coisas pertencem a Deus segundo o Salmo 24:1?", opts: ["Porque Ele é o nosso Criador, Mantenedor e Redentor", "Porque Ele precisa de dinheiro", "Por acaso"], correct: 0 },
+                    { q: "Qual percentual Deus reservou como dízimo sagrado (Levítico 27:30)?", opts: ["A décima parte (10%)", "A metade (50%)", "Qualquer quantia"], correct: 0 },
+                    { q: "Qual é a finalidade bíblica do dízimo (1 Coríntios 9:14)?", opts: ["Manter os obreiros e pastores que dedicam a vida a pregar o Evangelho", "Construir praças públicas", "Fazer comércio"], correct: 0 },
+                    { q: "Qual deve ser a nossa motivação ao devolver o dízimo ao Senhor?", opts: ["Expressar amor, gratidão e confiança em Deus como nosso Provedor", "Tentar comprar bênçãos", "Dar com tristeza"], correct: 0 }
+                ],
+                reflectionQ: "Confiar em Deus como nosso Provedor traz paz financeira e espiritual. Qual é a sua decisão?",
+                reflectionOpts: [
+                    "Reconheço que tudo o que tenho vem das mãos amorosas de Deus.",
+                    "Desejo ser fiel ao Senhor e apoiar o avanço da pregação do Evangelho.",
+                    "Confio nas promessas de cuidado e provisão do meu Pai Celestial."
+                ]
+            },
+            {
+                id: 21, title: "Ofertar: Um Ato de Adoração", verse: "2 Coríntios 9:7",
+                butterfly: "Borboleta Generosidade Floral", butterflyIcon: "🌸",
+                summary: [
+                    "Enquanto o dízimo é o reconhecimento do dever fiel (10%), a oferta é a expressão livre da nossa gratidão.",
+                    "Cada pessoa escolhe em seu coração quanto ofertar, proporcionalmente às bênçãos que recebeu (Deuteronômio 16:17).",
+                    "Antes de qualquer oferta material, o que Deus mais deseja é a entrega do nosso próprio coração a Ele!"
+                ],
+                questions: [
+                    { q: "O que os cristãos da Macedônia entregaram primeiro antes de ofertar (2 Coríntios 8:5)?", opts: ["Entregaram a si mesmos (o próprio coração) primeiro ao Senhor", "Apenas o que sobrava", "Ofertavam por obrigação"], correct: 0 },
+                    { q: "Quem define o percentual ou valor das ofertas voluntárias (Deuteronômio 16:17)?", opts: ["Cada pessoa propõe no coração, conforme a bênção que Deus lhe concedeu", "É proibido ofertar", "Outras pessoas impõem"], correct: 0 },
+                    { q: "Como Deus se alegra que entreguemos nossas ofertas (2 Coríntios 9:7)?", opts: ["Com alegria e amor, e não por tristeza ou necessidade", "Com reclamação", "Para ser visto pelos outros"], correct: 0 },
+                    { q: "Para que servem as ofertas na igreja de Deus?", opts: ["Para manter o templo local, ajudar os necessitados e levar missões a lugares distantes", "Para enriquecer pessoas", "Não têm utilidade"], correct: 0 }
+                ],
+                reflectionQ: "Um coração agradecido floresce em alegria. Qual sentimento você guarda hoje?",
+                reflectionOpts: [
+                    "Antes de tudo, entrego minha própria vida e meu coração nos braços de Deus.",
+                    "Sou profundamente grata por todas as bênçãos que o Senhor me dá a cada dia.",
+                    "Quero cultivar um coração generoso e alegre na causa de Deus."
+                ]
+            },
+            {
+                id: 22, title: "Como Identificar a Igreja Verdadeira", verse: "Efésios 2:19-20",
+                butterfly: "Borboleta Sete Estrelas", butterflyIcon: "✨",
+                summary: [
+                    "A igreja de Deus na Bíblia está edificada sobre a Rocha (Jesus Cristo) e sustenta as colunas da verdade bíblica.",
+                    "As 8 colunas bíblicas incluem: A Bíblia toda, Salvação pela Graça, Volta visível de Jesus, Os 10 Mandamentos, Dom de Profecia, O Sábado, Missão Mundial e Saúde.",
+                    "Jesus chama Seus filhos sinceros de todos os lugares para fazerem parte da família que guarda os mandamentos de Deus e a fé em Jesus (Apocalipse 14:12)."
+                ],
+                questions: [
+                    { q: "Quem é a Pedra Principal sobre a qual a igreja verdadeira está edificada (Efésios 2:20)?", opts: ["O próprio Jesus Cristo", "Um líder humano", "A sabedoria do mundo"], correct: 0 },
+                    { q: "Como identificamos a igreja bíblica em meio a tantos grupos religiosos (João 7:17)?", opts: ["Verificando se ela ensina e pratica todas as colunas da doutrina bíblica", "Apenas pelo tamanho do prédio", "Pela tradição antiga"], correct: 0 },
+                    { q: "Qual é o alcance da missão da igreja de Deus segundo Apocalipse 14:6?", opts: ["Um movimento mundial que prega a toda nação, tribo, língua e povo", "Um grupo fechado em uma só cidade", "Uma sociedade secreta"], correct: 0 },
+                    { q: "Como Apocalipse 14:12 descreve os santos nos últimos dias?", opts: ["Os que guardam os mandamentos de Deus e têm a fé em Jesus", "Os que anulam a Lei de Deus", "Os que não estudam as Escrituras"], correct: 0 }
+                ],
+                reflectionQ: "Fazer parte da família de Deus fortalece nossa caminhada rumo ao Céu. Qual é o seu desejo?",
+                reflectionOpts: [
+                    "Agradeço a Deus por me guiar às verdades tão claras da Sua Palavra.",
+                    "Reconheço na Igreja Adventista do Sétimo Dia as colunas bíblicas de Jesus.",
+                    "Desejo caminhar unida à família de Deus enquanto aguardamos a volta de Cristo."
+                ]
+            },
+            {
+                id: 23, title: "Por Que Devo Ser Batizado?", verse: "Romanos 6:3-4",
+                butterfly: "Borboleta Águas Cristalinas", butterflyIcon: "🦋",
+                summary: [
+                    "Jesus foi batizado no rio Jordão por João Batista para nos deixar o exemplo perfeito (Marcos 1:9-10).",
+                    "Batizar significa 'mergulhar' (imersão nas águas), simbolizando morrer para o passado e nascer para uma nova vida com Cristo!",
+                    "Deus não leva em conta os tempos de ignorância; no batismo, nosso passado é lavado e nos tornamos novas criaturas!"
+                ],
+                questions: [
+                    { q: "De que maneira Jesus foi batizado no rio Jordão (Marcos 1:9-10)?", opts: ["Por imersão (sendo mergulhado nas águas e saindo delas)", "Com gotas de água na cabeça", "Sem água"], correct: 0 },
+                    { q: "O que o batismo bíblico simboliza segundo Romanos 6:3-4?", opts: ["Sepultar a velha vida de pecados e ressuscitar para uma vida nova em Cristo", "Que a pessoa já não precisa mais de Deus", "Apenas uma festa social"], correct: 0 },
+                    { q: "O que Jesus afirmou em Marcos 16:16 sobre a importância dessa decisão?", opts: ["Quem crer e for batizado será salvo", "O batismo não tem importância", "Só os apóstolos precisavam ser batizados"], correct: 0 },
+                    { q: "Quando ouvimos a voz amorosa de Deus nos chamando, qual é o tempo de responder (Hebreus 3:15)?", opts: ["Hoje, se ouvirdes a Sua voz, não endureçais o coração", "Deixar para um dia distante", "Nunca decidir"], correct: 0 }
+                ],
+                reflectionQ: "O batismo é um abraço público de aliança entre você e Jesus. O que seu coração sente hoje?",
+                reflectionOpts: [
+                    "Creio no batismo bíblico por imersão, seguindo o exemplo do meu Salvador Jesus.",
+                    "Desejo viver como uma nova criatura, lavada e redimida pelo amor de Cristo.",
+                    "Quero entregar minha vida inteiramente a Deus e selar minha aliança com Ele."
+                ]
+            },
+            {
+                id: 24, title: "Princípios de Vida Cristã", verse: "2 Coríntios 5:17",
+                butterfly: "Borboleta Luz da Manhã", butterflyIcon: "💛",
+                summary: [
+                    "Quem está em Cristo é nova criatura (2 Coríntios 5:17) e nutre sua fé lendo a Bíblia, orando, reunindo-se na igreja e partilhando o amor.",
+                    "O Sábado é celebrado com paz e alegria do pôr do sol de sexta-feira ao pôr do sol de sábado.",
+                    "Jesus também deixou a cerimônia do Lava-pés (humildade e perdão) e a Santa Ceia em memória do Seu sacrifício."
+                ],
+                questions: [
+                    { q: "Quais práticas diárias fortalecem a paz e a fé do cristão?", opts: ["Comunhão diária pela Bíblia e oração, congregar com os irmãos e partilhar o amor de Jesus", "Isolar-se e esquecer a oração", "Viver ansioso sem buscar a Deus"], correct: 0 },
+                    { q: "Quando começa e termina a guarda bíblica do Sábado (Levítico 23:32; Lucas 23:54)?", opts: ["Do pôr do sol de sexta-feira até o pôr do sol de sábado", "Da meia-noite à meia-noite", "Apenas sábado pela manhã"], correct: 0 },
+                    { q: "Qual é o belo significado da cerimônia do Lava-pés instituída por Jesus (João 13:14-15)?", opts: ["Humildade, comunhão e disposição de perdoar e servir aos irmãos", "Orgulho espiritual", "Apenas higiene física"], correct: 0 },
+                    { q: "O que representam o pão sem fermento e o suco de uva puro na Santa Ceia (1 Coríntios 11:23-26)?", opts: ["O corpo e o sangue de Jesus entregues por nossa salvação", "Um almoço comum", "Falta de perdão"], correct: 0 }
+                ],
+                reflectionQ: "Viver com Jesus traz leveza, pureza e paz ao nosso lar. Qual princípio você abraça hoje?",
+                reflectionOpts: [
+                    "Quero manter minha comunhão diária com Deus através da oração e da Bíblia.",
+                    "Desejo refletir a doçura, a simplicidade e o amor de Jesus em minha vida.",
+                    "Alegro-me em participar da comunhão na casa de Deus e na Santa Ceia."
+                ]
+            },
+            {
+                id: 25, title: "Educação Cristã e Sabedoria", verse: "Provérbios 22:6",
+                butterfly: "Borboleta Sabedoria Dourada", butterflyIcon: "🧡",
+                summary: [
+                    "A verdadeira educação desenvolve de forma harmoniosa o físico, a mente e o coração espiritual.",
+                    "No Éden, o próprio Deus era o Mestre que ensinava através da natureza e do convívio de amor.",
+                    "Buscar a sabedoria que vem do alto protege nossa mente e edifica nossa família para a eternidade."
+                ],
+                questions: [
+                    { q: "Qual é o grande objetivo da educação cristã verdadeira?", opts: ["Restaurar no ser humano a imagem de Deus, unindo ensino e redenção", "Apenas ganhar dinheiro sem princípios", "Afastar as pessoas de Deus"], correct: 0 },
+                    { q: "Como funcionava a escola que Jesus dirigiu com Seus discípulos?", opts: ["Eles caminhavam com Jesus, aprendendo por Suas palavras e pelo Seu exemplo de amor", "Era apenas teórica e fria", "Sem contato com as pessoas"], correct: 0 },
+                    { q: "O que devemos preencher em nossa mente no dia a dia (Filipenses 4:8)?", opts: ["Tudo o que é verdadeiro, respeitável, justo, puro, amável e de boa fama", "Coisas que trazem angústia e maldade", "Filosofias vazias contra Deus"], correct: 0 },
+                    { q: "Qual é a promessa de Isaías 54:13 quando deixamos Deus nos ensinar?", opts: ["Todos os teus filhos serão ensinados do Senhor, e será grande a paz de teus filhos", "Não haverá paz", "A sabedoria será esquecida"], correct: 0 }
+                ],
+                reflectionQ: "Aprender aos pés de Jesus renova a nossa mente todos os dias. Qual é a escolha do seu coração?",
+                reflectionOpts: [
+                    "Quero ter Jesus como o grande Mestre da minha mente e da minha casa.",
+                    "Escolho alimentar meus pensamentos com tudo o que é puro, bom e traz paz.",
+                    "Peço a sabedoria do Céu para guiar minhas decisões e minha família."
+                ]
+            },
+            {
+                id: 26, title: "A Vida no Espírito Santo", verse: "Gálatas 5:22-23",
+                butterfly: "Borboleta Brisa do Espírito", butterflyIcon: "🤍",
+                summary: [
+                    "Jesus cumpriu a promessa de enviar o Espírito Santo (o Consolador) para habitar conosco todos os dias (João 14:16).",
+                    "O Espírito Santo nos guia na verdade, consola nossas dores e transforma suavemente o nosso caráter.",
+                    "A presença dEle produz em nós o Fruto do Espírito: amor, alegria, paz, longanimidade, benignidade, bondade, fidelidade, mansidão e domínio próprio!"
+                ],
+                questions: [
+                    { q: "Que promessa preciosa Jesus fez antes de subir ao Céu (João 14:16)?", opts: ["Que o Pai nos daria outro Consolador, o Espírito Santo, para ficar conosco para sempre", "Que ficaríamos órfãos e sozinhos", "Que ninguém nos ajudaria"], correct: 0 },
+                    { q: "Quais são as funções do Espírito Santo em nossa vida (João 14:26; 16:13)?", opts: ["Ensinar, lembrar as palavras de Jesus, consolar e guiar em toda a verdade", "Causar confusão", "Afastar da Bíblia"], correct: 0 },
+                    { q: "Como sabemos que o Espírito Santo está habitando em nosso coração (Gálatas 5:22-23)?", opts: ["Pelos frutos de amor, paz, paciência, mansidão e obediência carinhosa a Deus", "Pelo orgulho pessoal", "Pela falta de perdão"], correct: 0 },
+                    { q: "O que Jesus prometeu em Lucas 11:13 àqueles que pedem em oração?", opts: ["Que o Pai Celestial dará com alegria o Espírito Santo aos que Lhe pedirem!", "Que é difícil receber o Espírito Santo", "Que Deus não ouve"], correct: 0 }
+                ],
+                reflectionQ: "O Espírito Santo deseja encher seus dias de paz, amor e serenidade. Qual é a sua oração hoje?",
+                reflectionOpts: [
+                    "Peço todos os dias o batismo e a doce presença do Espírito Santo em minha vida.",
+                    "Quero que o Fruto do Espírito (amor, alegria e paz) floresça em meu coração.",
+                    "Abro minha alma para ser guiada e consolada pelo Espírito de Deus."
+                ]
+            },
+            {
+                id: 27, title: "Um Ministério para Todos", verse: "Mateus 5:14-16",
+                butterfly: "Borboleta Rainha do Jardim Eterno", butterflyIcon: "👑",
+                summary: [
+                    "Jesus disse: 'Vós sois o sal da terra e a luz do mundo' (Mateus 5:13-14).",
+                    "O Espírito Santo concede dons especiais a cada pessoa, sendo o Amor o dom supremo de todos (1 Coríntios 13).",
+                    "Compartilhar uma palavra de esperança, orar por alguém e viver o amor de Cristo é a nossa linda missão até Ele voltar!"
+                ],
+                questions: [
+                    { q: "Com o que Jesus comparou a influência positiva de Seus filhos no mundo (Mateus 5:13-14)?", opts: ["Com o sal da terra (que dá sabor) e a luz do mundo (que ilumina na escuridão)", "Com uma lâmpada apagada", "Com algo escondido"], correct: 0 },
+                    { q: "Qual é o dom espiritual mais excelente e importante segundo 1 Coríntios 13:13?", opts: ["O dom do Amor", "Falar difícil sem amor", "Buscar elogios"], correct: 0 },
+                    { q: "O que nos tornamos quando entregamos nossa vida a Cristo (1 Pedro 2:9)?", opts: ["Geração eleita, sacerdócio real e povo adquirido para anunciar as grandezas de Deus", "Pessoas sem propósito", "Apenas espectadores"], correct: 0 },
+                    { q: "Qual promessa Jesus deixou ao nos confiar Sua missão de amor (Mateus 28:20)?", opts: ["Eis que estou convosco todos os dias, até a consumação dos séculos!", "Vocês caminharão sozinhos", "Estarei presente só às vezes"], correct: 0 }
+                ],
+                reflectionQ: "Parabéns por concluir os 27 estudos do Jardim da Verdade! Qual semente final você guarda no coração?",
+                reflectionOpts: [
+                    "Quero brilhar a luz e o amor de Jesus por onde eu passar!",
+                    "Entrego meus dons e minha vida nas mãos de Deus para abençoar outras pessoas.",
+                    "Caminharei todos os dias ouvindo a voz de Deus até encontrar Jesus face a face!"
                 ]
             }
         ];
 
-        // Se quiser as outras 22 lições preenchidas, posso adicioná-las. Por limite de espaço e praticidade da demonstração, gerarei as outras dinamicamente como placeholders.
-        for(let i = 6; i <= 27; i++) {
-            lessons.push({
-                id: i, title: `Tema ${i}: Estudo Contínuo`, verse: "Salmo 119:105",
-                butterfly: `Borboleta Rara #${i}`, butterflyIcon: "🦋",
-                summary: [
-                    "A Palavra de Deus é lâmpada para nossos pés.",
-                    "Continuamos a jornada de descobertas e paz.",
-                    "Cada passo revela mais do amor do Criador."
-                ],
-                questions: [
-                    { q: "A Palavra de Deus traz luz para a nossa vida?", opts: ["Sim, ilumina nossos caminhos", "Não", "Apenas à noite"], correct: 0 },
-                    { q: "Devemos continuar estudando e buscando a Deus?", opts: ["Sim, todos os dias", "Somente nos finais de semana", "Já sei o suficiente"], correct: 0 },
-                    { q: "O amor de Deus por nós muda?", opts: ["Não, é eterno e imutável", "Muda conforme as estações", "Depende do nosso humor"], correct: 0 },
-                    { q: "A paz verdadeira vem de onde?", opts: ["Da presença de Deus em nosso coração", "De ter muito dinheiro", "De estar de férias"], correct: 0 }
-                ],
-                reflectionQ: "Nesta caminhada diária com Deus, qual a sua decisão?",
-                reflectionOpts: [
-                    "Manter meu coração aberto para aprender mais de Jesus.",
-                    "Confiar que Deus dirige os meus passos a cada dia.",
-                    "Guardar a paz de Cristo no meu interior."
-                ]
-            });
-        }
+        // =========================================================================
+        // 2. SISTEMA DE SALVAMENTO BLINDADO (LOCALSTORAGE + WINDOW.NAME + COOKIE)
+        // =========================================================================
+        const JARDIM_STORAGE_KEY = 'jardim_da_verdade_save_v3';
 
-        // =========================================================================
-        // 2. ESTADO E SALVAMENTO BLINDADO
-        // =========================================================================
-        const STORAGE_KEY = 'jardim_da_verdade_save_v2';
         let gameState = {
             playerName: '',
             nectar: 0,
             completedLessons: [],
-            memories: [], // { lessonId, text }
+            memories: [],
             preferences: {
                 largeText: false,
-                voiceSpeed: 'normal'
+                voiceSpeed: 'normal',
+                musicMuted: false
             }
         };
 
@@ -537,7 +1002,8 @@
             try {
                 const d = new Date();
                 d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
-                document.cookie = name + "=" + encodeURIComponent(value) + ";expires=" + d.toUTCString() + ";path=/;SameSite=Lax";
+                const expires = "expires=" + d.toUTCString();
+                document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";path=/;SameSite=Lax";
             } catch (e) {}
         }
 
@@ -548,7 +1014,9 @@
                 const ca = decodedCookie.split(';');
                 for (let i = 0; i < ca.length; i++) {
                     let c = ca[i].trim();
-                    if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
+                    if (c.indexOf(cname) === 0) {
+                        return c.substring(cname.length, c.length);
+                    }
                 }
             } catch (e) {}
             return "";
@@ -556,85 +1024,263 @@
 
         function loadSaveData() {
             let raw = null;
-            try { raw = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+            try { raw = localStorage.getItem(JARDIM_STORAGE_KEY); } catch (e) {}
             if (!raw) {
-                try { if (window.name && window.name.startsWith('JARDIM_SAVE:')) raw = decodeURIComponent(window.name.replace('JARDIM_SAVE:', '')); } catch (e) {}
+                try {
+                    if (window.name && window.name.startsWith('JARDIM_SAVE:')) {
+                        raw = decodeURIComponent(window.name.replace('JARDIM_SAVE:', ''));
+                    }
+                } catch (e) {}
             }
-            if (!raw) raw = getCookieBackup(STORAGE_KEY);
+            if (!raw) {
+                raw = getCookieBackup(JARDIM_STORAGE_KEY);
+            }
 
             if (raw) {
                 try {
                     const parsed = JSON.parse(raw);
-                    gameState = { ...gameState, ...parsed };
-                    return Boolean(gameState.playerName);
+                    gameState = {
+                        ...gameState,
+                        ...parsed,
+                        completedLessons: Array.isArray(parsed.completedLessons) ? parsed.completedLessons : [],
+                        memories: Array.isArray(parsed.memories) ? parsed.memories : [],
+                        preferences: { ...gameState.preferences, ...(parsed.preferences || {}) }
+                    };
+                    return Boolean(gameState.playerName && gameState.playerName.trim() !== '');
                 } catch (e) {}
             }
             return false;
         }
 
         function saveGameData() {
-            const jsonStr = JSON.stringify(gameState);
-            try { localStorage.setItem(STORAGE_KEY, jsonStr); } catch (e) {}
-            try { window.name = 'JARDIM_SAVE:' + encodeURIComponent(jsonStr); } catch (e) {}
-            setCookieBackup(STORAGE_KEY, jsonStr, 365);
+            const str = JSON.stringify(gameState);
+            try { localStorage.setItem(JARDIM_STORAGE_KEY, str); } catch (e) {}
+            try { window.name = 'JARDIM_SAVE:' + encodeURIComponent(str); } catch (e) {}
+            setCookieBackup(JARDIM_STORAGE_KEY, str, 365);
             updateUI();
         }
 
         // =========================================================================
-        // 3. MOTOR SENSORIAL (ÁUDIO TTS E MÚSICA DE FUNDO)
+        // 3. MÚSICA INSTRUMENTAL DE PAZ (HARPA/PIANO SUAVE VIA TONE.JS)
         // =========================================================================
-        let synthMusic;
-        let isMusicPlaying = false;
         let isAudioReady = false;
+        let isMusicPlaying = false;
+        let peaceSynth = null;
+        let peaceLoop = null;
 
         async function initMusic() {
-            if (!isAudioReady) {
-                try {
-                    await Tone.start();
-                    synthMusic = new Tone.PolySynth(Tone.Synth, {
-                        oscillator: { type: "sine" },
-                        envelope: { attack: 2, decay: 1, sustain: 1, release: 4 }
-                    }).toDestination();
-                    synthMusic.volume.value = -20; // Bem suave
-                    isAudioReady = true;
-                } catch (e) {}
-            }
-        }
+            if (isAudioReady || typeof Tone === 'undefined') return;
+            try {
+                await Tone.start();
+                peaceSynth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "sine" },
+                    envelope: { attack: 1.5, decay: 1.2, sustain: 0.4, release: 3.0 }
+                }).toDestination();
+                peaceSynth.volume.value = -22;
 
-        function toggleMusic() {
-            initMusic().then(() => {
-                const btn = document.getElementById('btn-music');
-                if (isMusicPlaying) {
-                    Tone.Transport.stop();
-                    Tone.Transport.cancel();
-                    btn.classList.remove('text-olive');
-                    isMusicPlaying = false;
-                } else {
-                    playAmbientMusic();
-                    btn.classList.add('text-olive');
+                const chords = [
+                    ["C4", "E4", "G4", "B4"],
+                    ["A3", "C4", "E4", "G4"],
+                    ["F3", "A3", "C4", "E4"],
+                    ["G3", "B3", "D4", "G4"]
+                ];
+                let chordIdx = 0;
+
+                peaceLoop = new Tone.Loop((time) => {
+                    if (isMusicPlaying && peaceSynth) {
+                        peaceSynth.triggerAttackRelease(chords[chordIdx], "2n", time);
+                        chordIdx = (chordIdx + 1) % chords.length;
+                    }
+                }, "1m");
+
+                Tone.Transport.bpm.value = 54;
+                Tone.Transport.start();
+                peaceLoop.start(0);
+                isAudioReady = true;
+
+                if (!gameState.preferences.musicMuted) {
                     isMusicPlaying = true;
+                    updateMusicButtonUI();
                 }
-            });
+            } catch (e) {}
         }
 
-        function playAmbientMusic() {
-            const chords = [
-                ["C4", "E4", "G4"], ["A3", "C4", "E4"], ["F3", "A3", "C4"], ["G3", "B3", "D4"]
-            ];
-            let chordIndex = 0;
-            Tone.Transport.scheduleRepeat(time => {
-                synthMusic.triggerAttackRelease(chords[chordIndex], "2m", time);
-                chordIndex = (chordIndex + 1) % chords.length;
-            }, "2m");
-            Tone.Transport.start();
+        async function toggleMusic() {
+            if (!isAudioReady) await initMusic();
+            isMusicPlaying = !isMusicPlaying;
+            gameState.preferences.musicMuted = !isMusicPlaying;
+            updateMusicButtonUI();
+            saveGameData();
+        }
+
+        function updateMusicButtonUI() {
+            const btn = document.getElementById('btn-music');
+            if (!btn) return;
+            btn.innerHTML = isMusicPlaying
+                ? '<i class="fa-solid fa-music"></i>'
+                : '<i class="fa-solid fa-volume-xmark opacity-50"></i>';
         }
 
         // =========================================================================
-        // MOTOR DE VOZ NEURAL HIPER-REALISTA (GEMINI NEURAL TTS + CLOUD STREAM + FALLBACK)
+        // MOTOR DE VOZ NEURAL HIPER-REALISTA (VOZ ORUS FIXA + CACHE INDEXEDDB + LINK MÁGICO)
         // =========================================================================
         let currentAudioElement = null;
         let currentVoiceAbortController = null;
         const neuralAudioCache = new Map();
+        const VOICE_CACHE_DB = 'JardimOrusVoiceCacheDB';
+        const VOICE_CACHE_STORE = 'orusWavStore';
+
+        // Captura automática da chave da Voz Orus se vier pelo Link Mágico (?key= ou #key=)
+        (function captureKeyFromUrl() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+                const incomingKey = urlParams.get('key') || urlParams.get('k') || hashParams.get('key') || hashParams.get('k');
+                if (incomingKey && incomingKey.trim().length > 10) {
+                    let cleanKey = incomingKey.trim();
+                    if (!cleanKey.startsWith('AIza')) {
+                        try { cleanKey = atob(cleanKey); } catch (e) {}
+                    }
+                    localStorage.setItem('jardim_orus_api_key', cleanKey);
+                    setCookieBackup('jardim_orus_api_key', cleanKey, 365);
+                    // Limpa a URL para ficar bonita e discreta para ela
+                    if (window.history && window.history.replaceState) {
+                        const cleanUrl = window.location.origin + window.location.pathname;
+                        window.history.replaceState({}, document.title, cleanUrl);
+                    }
+                }
+            } catch (e) {}
+        })();
+
+        // Cole sua chave do Google AI Studio aqui entre as aspas se quiser que já fique gravada direto no código do GitHub:
+        const FIXED_GITHUB_GEMINI_KEY = "";
+
+        function getActiveGeminiKey() {
+            if (FIXED_GITHUB_GEMINI_KEY && FIXED_GITHUB_GEMINI_KEY.trim() !== "") {
+                return FIXED_GITHUB_GEMINI_KEY.trim();
+            }
+            try {
+                const saved = localStorage.getItem('jardim_orus_api_key') || getCookieBackup('jardim_orus_api_key');
+                if (saved && saved.trim() !== "") return saved.trim();
+            } catch (e) {}
+            return ""; // No preview do Gemini, a string vazia usa a chave interna automática
+        }
+
+        function openVoiceConfigModal() {
+            const modal = document.getElementById('modal-voice-key');
+            const input = document.getElementById('input-gemini-key');
+            const fb = document.getElementById('voice-key-feedback');
+            if (fb) fb.classList.add('hidden');
+            if (input) input.value = getActiveGeminiKey();
+            if (modal) modal.classList.remove('hidden-screen');
+        }
+
+        function closeVoiceConfigModal() {
+            const modal = document.getElementById('modal-voice-key');
+            if (modal) modal.classList.add('hidden-screen');
+        }
+
+        async function saveAndTestOrusKey() {
+            const input = document.getElementById('input-gemini-key');
+            const fb = document.getElementById('voice-key-feedback');
+            const keyVal = input ? input.value.trim() : '';
+            try {
+                localStorage.setItem('jardim_orus_api_key', keyVal);
+                setCookieBackup('jardim_orus_api_key', keyVal, 365);
+            } catch (e) {}
+
+            if (fb) {
+                fb.innerText = "Testando a voz Orus em tempo real...";
+                fb.className = "text-xs font-bold text-amber-800 bg-amber-50 p-2 rounded-lg mb-3 text-center block";
+            }
+
+            neuralAudioCache.clear();
+            await readAudioText(null, `Olá, ${gameState.playerName || 'Amiga'}! A voz neural Orus está configurada e pronta no seu Jardim da Verdade.`);
+            
+            if (fb) {
+                fb.innerText = "✅ Voz Orus salva neste aparelho!";
+                fb.className = "text-xs font-bold text-green-700 bg-green-50 p-2 rounded-lg mb-3 text-center block";
+            }
+        }
+
+        function copyMagicShareLink() {
+            const input = document.getElementById('input-gemini-key');
+            const fb = document.getElementById('voice-key-feedback');
+            const keyVal = (input && input.value.trim()) ? input.value.trim() : getActiveGeminiKey();
+
+            if (!keyVal) {
+                if (fb) {
+                    fb.innerText = "⚠️ Cole primeiro a chave AIzaSy... no campo acima para gerar o link mágico!";
+                    fb.className = "text-xs font-bold text-red-700 bg-red-50 p-2 rounded-lg mb-3 text-center block";
+                }
+                return;
+            }
+
+            try {
+                localStorage.setItem('jardim_orus_api_key', keyVal);
+                setCookieBackup('jardim_orus_api_key', keyVal, 365);
+            } catch (e) {}
+
+            const encodedKey = btoa(keyVal);
+            const baseUrl = window.location.origin + window.location.pathname;
+            const magicUrl = `${baseUrl}?k=${encodeURIComponent(encodedKey)}`;
+
+            const tempInput = document.createElement('textarea');
+            tempInput.value = magicUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+
+            if (fb) {
+                fb.innerText = "🔗 Link Mágico copiado! Quando ela abrir esse link no celular, a voz Orus ficará fixa automaticamente!";
+                fb.className = "text-xs font-bold text-green-700 bg-green-50 p-2 rounded-lg mb-3 text-center block";
+            }
+        }
+
+        // Banco IndexedDB para guardar os áudios WAV da voz Orus permanentemente no celular
+        function getCachedOrusBlobFromDB(textKey) {
+            return new Promise((resolve) => {
+                try {
+                    if (!window.indexedDB) return resolve(null);
+                    const req = indexedDB.open(VOICE_CACHE_DB, 1);
+                    req.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains(VOICE_CACHE_STORE)) {
+                            db.createObjectStore(VOICE_CACHE_STORE);
+                        }
+                    };
+                    req.onsuccess = (e) => {
+                        const db = e.target.result;
+                        const tx = db.transaction(VOICE_CACHE_STORE, 'readonly');
+                        const getReq = tx.objectStore(VOICE_CACHE_STORE).get(textKey);
+                        getReq.onsuccess = () => resolve(getReq.result || null);
+                        getReq.onerror = () => resolve(null);
+                    };
+                    req.onerror = () => resolve(null);
+                } catch (e) {
+                    resolve(null);
+                }
+            });
+        }
+
+        function saveOrusBlobToDB(textKey, wavBlob) {
+            try {
+                if (!window.indexedDB) return;
+                const req = indexedDB.open(VOICE_CACHE_DB, 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(VOICE_CACHE_STORE)) {
+                        db.createObjectStore(VOICE_CACHE_STORE);
+                    }
+                };
+                req.onsuccess = (e) => {
+                    const db = e.target.result;
+                    const tx = db.transaction(VOICE_CACHE_STORE, 'readwrite');
+                    tx.objectStore(VOICE_CACHE_STORE).put(wavBlob, textKey);
+                };
+            } catch (e) {}
+        }
 
         function stopAllVoiceAudio() {
             if (currentVoiceAbortController) {
@@ -655,7 +1301,7 @@
             if (badge) badge.classList.add('hidden');
         }
 
-        function setVoiceStatusBadge(visible, label = "🎙️ Voz Neural...") {
+        function setVoiceStatusBadge(visible, label = "🎙️ Voz Neural Orus...") {
             const badge = document.getElementById('neural-voice-status');
             if (!badge) return;
             badge.innerText = label;
@@ -741,11 +1387,11 @@
             return new Blob([buffer], { type: 'audio/wav' });
         }
 
-        // Camada 1: Voz Masculina Neural de Estúdio (Gemini 2.5 Flash TTS - Voz Masculina "Orus")
+        // Camada Principal Fixa: Voz Masculina Neural "Orus" (Gemini Neural TTS)
         async function fetchGeminiNeuralMaleVoice(text, signal) {
-            const apiKey = "";
+            const apiKey = getActiveGeminiKey();
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
-            const promptInstruction = `Narre com voz masculina brasileira extremamente humana, calorosa, acolhedora, serena, pastoral e natural, com pausas suaves de respiração: ${text}`;
+            const promptInstruction = `Narre em português do Brasil com voz masculina extremamente humana, calorosa, acolhedora, serena, pastoral e natural, com pausas suaves de respiração: ${text}`;
 
             const payload = {
                 contents: [{ parts: [{ text: promptInstruction }] }],
@@ -753,13 +1399,13 @@
                     responseModalities: ["AUDIO"],
                     speechConfig: {
                         voiceConfig: {
-                            prebuiltVoiceConfig: { voiceName: "Orus" } // Voz masculina firme, serena e profunda
+                            prebuiltVoiceConfig: { voiceName: "Orus" } // Voz masculina firme, serena e profunda fixa
                         }
                     }
                 }
             };
 
-            const delays = [600, 1200];
+            const delays = [500, 1000];
             for (let attempt = 0; attempt <= delays.length; attempt++) {
                 try {
                     const response = await fetch(apiUrl, {
@@ -780,6 +1426,7 @@
                         const pcmBuffer = base64ToArrayBuffer(audioData);
                         const pcm16 = new Int16Array(pcmBuffer);
                         const wavBlob = pcmToWavBlob(pcm16, sampleRate);
+                        saveOrusBlobToDB(text, wavBlob);
                         return URL.createObjectURL(wavBlob);
                     }
                     break;
@@ -792,9 +1439,8 @@
             return null;
         }
 
-        // Camada 2: Voz Neural em Nuvem via StreamElements / Microsoft Edge Neural (Antônio Neural - Masculina PT-BR)
+        // Camada 2 de Contingência em Nuvem: Voz Masculina Neural MP3 (Sem usar o robô metálico do celular)
         async function playCloudNeuralStream(text, signal) {
-            // Divide em sentenças curtas para leitura fluida e natural
             const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
             const playbackRate = gameState.preferences.voiceSpeed === 'lenta' ? 0.88 : 0.98;
 
@@ -803,10 +1449,8 @@
                 const chunk = rawSentence.trim();
                 if (!chunk) continue;
 
-                // Tenta a voz masculina neural brasileira via endpoint de síntese em nuvem
                 const streamUrls = [
-                    `https://api.streamelements.com/kappa/v2/speech?voice=Ricardo&text=${encodeURIComponent(chunk)}`,
-                    `https://translate.googleapis.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(chunk)}&tl=pt-BR&client=tw-ob`
+                    `https://api.streamelements.com/kappa/v2/speech?voice=Ricardo&text=${encodeURIComponent(chunk)}`
                 ];
 
                 let playedChunk = false;
@@ -817,7 +1461,7 @@
                             const audio = new Audio(url);
                             audio.playbackRate = playbackRate;
                             currentAudioElement = audio;
-                            audio.onloadeddata = () => setVoiceStatusBadge(true, "🎙️ Voz Neural Ativa");
+                            audio.onloadeddata = () => setVoiceStatusBadge(true, "🎙️ Voz Neural em Nuvem");
                             audio.onended = () => resolve();
                             audio.onerror = (e) => reject(e);
                             const playPromise = audio.play();
@@ -836,67 +1480,6 @@
             return true;
         }
 
-        // Camada 3: Voz Masculina Neural Nativa do Navegador (Microsoft Antônio Online / Natural)
-        function playBestSystemMaleNeuralVoice(text) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-
-            const sentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
-            const baseRate = gameState.preferences.voiceSpeed === 'lenta' ? 0.86 : 0.96;
-
-            const speakWithLoadedVoices = () => {
-                const voices = window.speechSynthesis.getVoices();
-                const ptVoices = voices.filter(v => v.lang && (v.lang.toLowerCase().includes('pt-br') || v.lang.toLowerCase().includes('pt_br') || v.lang.toLowerCase().startsWith('pt')));
-
-                // Prioridade estrita para vozes Masculinas Neurais Online (Edge/Windows/Mac/Android)
-                const maleNeuralPriority = [
-                    v => /antonio.*online.*natural/i.test(v.name),
-                    v => /antonio.*neural/i.test(v.name),
-                    v => /antonio/i.test(v.name),
-                    v => /fabio|humberto|julio|nicolau|valerio/i.test(v.name),
-                    v => /daniel/i.test(v.name),
-                    v => /felipe/i.test(v.name),
-                    v => /ricardo/i.test(v.name),
-                    v => /natural|neural|online/i.test(v.name) && !/francisca|thalita|maria|luciana|vitoria|camila|fernanda|leila|raquel/i.test(v.name),
-                    v => /google.*portugu/i.test(v.name)
-                ];
-
-                let chosenVoice = null;
-                for (const matcher of maleNeuralPriority) {
-                    chosenVoice = ptVoices.find(matcher);
-                    if (chosenVoice) break;
-                }
-                if (!chosenVoice && ptVoices.length > 0) {
-                    chosenVoice = ptVoices[0];
-                }
-
-                // Se a voz já for uma voz neural nativa (como Microsoft Antonio), mantém pitch=1.0 para preservar a qualidade humana
-                const isNativeNeural = chosenVoice && /natural|neural|online|antonio|daniel|felipe/i.test(chosenVoice.name);
-
-                sentences.forEach((sentence, idx) => {
-                    const cleanSentence = sentence.trim();
-                    if (!cleanSentence) return;
-                    const utter = new SpeechSynthesisUtterance(cleanSentence);
-                    utter.lang = 'pt-BR';
-                    if (chosenVoice) utter.voice = chosenVoice;
-                    utter.rate = baseRate;
-                    utter.pitch = isNativeNeural ? 1.0 : 0.88;
-                    if (idx === 0) utter.onstart = () => setVoiceStatusBadge(true, "🎙️ Voz Ativa");
-                    if (idx === sentences.length - 1) {
-                        utter.onend = () => setVoiceStatusBadge(false);
-                        utter.onerror = () => setVoiceStatusBadge(false);
-                    }
-                    window.speechSynthesis.speak(utter);
-                });
-            };
-
-            if (window.speechSynthesis.getVoices().length === 0) {
-                window.speechSynthesis.onvoiceschanged = speakWithLoadedVoices;
-            } else {
-                speakWithLoadedVoices();
-            }
-        }
-
         async function readAudioText(elementId, customText = null) {
             stopAllVoiceAudio();
 
@@ -912,16 +1495,16 @@
             const signal = currentVoiceAbortController.signal;
             const playbackRate = gameState.preferences.voiceSpeed === 'lenta' ? 0.88 : 1.0;
 
-            setVoiceStatusBadge(true, "🎙️ Preparando Voz Neural...");
+            setVoiceStatusBadge(true, "🎙️ Voz Orus...");
 
-            // 1. Verifica se o áudio neural já está no Cache para tocar instantaneamente
+            // 1. Verifica se o áudio da voz Orus já está na memória RAM (Instantâneo)
             if (neuralAudioCache.has(text)) {
                 try {
                     const cachedUrl = neuralAudioCache.get(text);
                     const audio = new Audio(cachedUrl);
                     audio.playbackRate = playbackRate;
                     currentAudioElement = audio;
-                    setVoiceStatusBadge(true, "🎙️ Voz Neural Real");
+                    setVoiceStatusBadge(true, "🎙️ Voz Neural Orus");
                     audio.onended = () => setVoiceStatusBadge(false);
                     audio.onerror = () => setVoiceStatusBadge(false);
                     await audio.play();
@@ -929,15 +1512,24 @@
                 } catch (e) {}
             }
 
-            // 2. Verifica se o navegador possui a voz Microsoft Antônio Online (Natural) nativa (Zero latência e 100% Neural)
-            const localVoices = ('speechSynthesis' in window) ? window.speechSynthesis.getVoices() : [];
-            const hasNativeAntonioNeural = localVoices.some(v => /antonio.*(online|natural|neural)/i.test(v.name));
-            if (hasNativeAntonioNeural) {
-                playBestSystemMaleNeuralVoice(text);
-                return;
-            }
+            // 2. Verifica se o áudio da voz Orus já está salvo no banco IndexedDB do celular (Instantâneo mesmo após fechar o app)
+            try {
+                const cachedBlob = await getCachedOrusBlobFromDB(text);
+                if (cachedBlob && !signal.aborted) {
+                    const blobUrl = URL.createObjectURL(cachedBlob);
+                    neuralAudioCache.set(text, blobUrl);
+                    const audio = new Audio(blobUrl);
+                    audio.playbackRate = playbackRate;
+                    currentAudioElement = audio;
+                    setVoiceStatusBadge(true, "🎙️ Voz Neural Orus");
+                    audio.onended = () => setVoiceStatusBadge(false);
+                    audio.onerror = () => setVoiceStatusBadge(false);
+                    await audio.play();
+                    return;
+                }
+            } catch (e) {}
 
-            // 3. Gera a Voz Masculina Neural Hiper-Realista pelo Gemini TTS ("Orus")
+            // 3. PRIORIDADE TOTAL: Gera a Voz Masculina Neural "Orus" do Gemini TTS
             try {
                 const wavUrl = await fetchGeminiNeuralMaleVoice(text, signal);
                 if (wavUrl && !signal.aborted) {
@@ -945,7 +1537,7 @@
                     const audio = new Audio(wavUrl);
                     audio.playbackRate = playbackRate;
                     currentAudioElement = audio;
-                    setVoiceStatusBadge(true, "🎙️ Voz Neural Real");
+                    setVoiceStatusBadge(true, "🎙️ Voz Neural Orus");
                     audio.onended = () => setVoiceStatusBadge(false);
                     audio.onerror = () => setVoiceStatusBadge(false);
                     await audio.play();
@@ -955,7 +1547,7 @@
                 if (signal.aborted) return;
             }
 
-            // 4. Fallback em Nuvem para GitHub Pages (Voz Masculina Ricardo / Cloud TTS)
+            // 4. Contingência em Nuvem (Caso esteja no GitHub ainda sem a chave configurada)
             try {
                 const cloudSuccess = await playCloudNeuralStream(text, signal);
                 if (cloudSuccess) {
@@ -966,10 +1558,9 @@
                 if (signal.aborted) return;
             }
 
-            // 5. Última Camada: Voz do Sistema Otimizada
-            if (!signal.aborted) {
-                playBestSystemMaleNeuralVoice(text);
-            }
+            // Se estiver fora do Gemini e sem chave configurada, pisca o ícone de chave para avisar
+            setVoiceStatusBadge(true, "🔑 Clique na chave no topo p/ ativar Voz Orus");
+            setTimeout(() => setVoiceStatusBadge(false), 4000);
         }
 
         function playSoftSuccess() {
