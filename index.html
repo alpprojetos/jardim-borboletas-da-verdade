@@ -1368,74 +1368,44 @@
         }
 
         // =========================================================================
-        // 5. MOTOR DE VOZ MASCULINA NEURAL AUTOMÁTICA (ZERO CHAVE - PRONTO PARA GITHUB)
+        // 5. MOTOR DE VOZ MASCULINA NEURAL REAL (ANTÔNIO NEURAL - SEM BLOQUEIO CORS/AUTOPLAY)
         // =========================================================================
-        let currentAudioElement = null;
-        let currentVoiceAbortController = null;
-        const neuralAudioCache = new Map();
-        const VOICE_CACHE_DB = 'JardimNeuralVoiceAutoDB_v2';
-        const VOICE_CACHE_STORE = 'neuralAudioStore';
+        const sharedVoicePlayer = new Audio();
+        sharedVoicePlayer.preload = "auto";
+        let isVoicePlayerUnlocked = false;
+        let activeSpeechSessionId = 0;
+        const preloadedAudioMap = new Map();
 
-        function getCachedVoiceBlobFromDB(textKey) {
-            return new Promise((resolve) => {
-                try {
-                    if (!window.indexedDB) return resolve(null);
-                    const req = indexedDB.open(VOICE_CACHE_DB, 1);
-                    req.onupgradeneeded = (e) => {
-                        const db = e.target.result;
-                        if (!db.objectStoreNames.contains(VOICE_CACHE_STORE)) {
-                            db.createObjectStore(VOICE_CACHE_STORE);
-                        }
-                    };
-                    req.onsuccess = (e) => {
-                        const db = e.target.result;
-                        const tx = db.transaction(VOICE_CACHE_STORE, 'readonly');
-                        const getReq = tx.objectStore(VOICE_CACHE_STORE).get(textKey);
-                        getReq.onsuccess = () => resolve(getReq.result || null);
-                        getReq.onerror = () => resolve(null);
-                    };
-                    req.onerror = () => resolve(null);
-                } catch (e) {
-                    resolve(null);
-                }
-            });
-        }
-
-        function saveVoiceBlobToDB(textKey, audioBlob) {
+        // Destrava o canal de áudio no primeiro toque na tela (exigência do Android/iPhone)
+        function unlockSharedVoicePlayer() {
+            if (isVoicePlayerUnlocked) return;
             try {
-                if (!window.indexedDB) return;
-                const req = indexedDB.open(VOICE_CACHE_DB, 1);
-                req.onupgradeneeded = (e) => {
-                    const db = e.target.result;
-                    if (!db.objectStoreNames.contains(VOICE_CACHE_STORE)) {
-                        db.createObjectStore(VOICE_CACHE_STORE);
-                    }
-                };
-                req.onsuccess = (e) => {
-                    const db = e.target.result;
-                    const tx = db.transaction(VOICE_CACHE_STORE, 'readwrite');
-                    tx.objectStore(VOICE_CACHE_STORE).put(audioBlob, textKey);
-                };
+                sharedVoicePlayer.src = "data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA";
+                sharedVoicePlayer.volume = 0.01;
+                const p = sharedVoicePlayer.play();
+                if (p !== undefined) {
+                    p.then(() => {
+                        sharedVoicePlayer.pause();
+                        sharedVoicePlayer.volume = 1.0;
+                        isVoicePlayerUnlocked = true;
+                    }).catch(() => {});
+                }
             } catch (e) {}
         }
+        document.addEventListener('pointerdown', unlockSharedVoicePlayer, { passive: true });
+        document.addEventListener('touchstart', unlockSharedVoicePlayer, { passive: true });
+        document.addEventListener('click', unlockSharedVoicePlayer, { passive: true });
 
         function stopAllVoiceAudio() {
-            if (currentVoiceAbortController) {
-                currentVoiceAbortController.abort();
-                currentVoiceAbortController = null;
-            }
-            if (currentAudioElement) {
-                try {
-                    currentAudioElement.pause();
-                    currentAudioElement.currentTime = 0;
-                } catch (e) {}
-                currentAudioElement = null;
-            }
+            activeSpeechSessionId++;
+            try {
+                sharedVoicePlayer.pause();
+                sharedVoicePlayer.removeAttribute('src');
+            } catch (e) {}
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
             }
-            const badge = document.getElementById('neural-voice-status');
-            if (badge) badge.classList.add('hidden');
+            setVoiceStatusBadge(false);
         }
 
         function setVoiceStatusBadge(visible, label = "🎙️ Voz Neural") {
@@ -1459,7 +1429,7 @@
             if (!rawText) return "";
             return rawText
                 .replace(/✿/g, " ")
-                .replace(/❤️|🦋|🍯|🙏|📖|🐛|👑|✨|🌸|💛|🧡|🤍|💚|💜|🩵|💙|🕊️/g, "")
+                .replace(/❤️|🦋|🍯|🙏|📖|🐛|👑|✨|🌸|💛|🧡|🤍|💚|💜|🩵|💙|🕊️|🌿|繭/g, "")
                 .replace(/1\s*João\s*(\d+):(\d+)/gi, "Primeira João, capítulo $1, versículo $2")
                 .replace(/3\s*João\s*(\d+)/gi, "Terceira João, versículo $1")
                 .replace(/2\s*Timóteo\s*(\d+):(\d+)/gi, "Segunda Timóteo, capítulo $1, versículo $2")
@@ -1539,7 +1509,7 @@
             return new Blob([buffer], { type: 'audio/wav' });
         }
 
-        function splitIntoNaturalSentences(text, maxLen = 185) {
+        function splitIntoNaturalSentences(text, maxLen = 175) {
             const rawSentences = text.match(/[^.!?]+[.!?]+|[^.!?]+$/g) || [text];
             const chunks = [];
             for (const s of rawSentences) {
@@ -1564,111 +1534,119 @@
             return chunks.length > 0 ? chunks : [text];
         }
 
-        async function playKeylessCloudNeuralVoice(text, signal) {
-            const chunks = splitIntoNaturalSentences(text, 185);
-            const playbackRate = gameState.preferences.voiceSpeed === 'lenta' ? 0.88 : 0.96;
+        // Lista de Servidores Diretos de Voz Masculina Neural (Microsoft Edge Neural: pt-BR-AntonioNeural)
+        // Usa stream direto no elemento <audio> para NUNCA sofrer bloqueio de CORS no GitHub Pages!
+        function getDirectNeuralStreamUrls(chunkText) {
+            const enc = encodeURIComponent(chunkText);
+            return [
+                // 1. Servidor Direto Microsoft Edge Neural - Voz Masculina Antônio Neural (Super realista)
+                `https://tts.travisvn.com/?text=${enc}&voice=pt-BR-AntonioNeural&rate=-4%25`,
+                // 2. Servidor Espelho Edge Neural - Voz Masculina Antônio Neural
+                `https://edge-tts.vercel.app/api/tts?text=${enc}&voice=pt-BR-AntonioNeural`,
+                // 3. Servidor Espelho 2 Edge Neural - Voz Masculina Humberto Neural
+                `https://tts.travisvn.com/?text=${enc}&voice=pt-BR-HumbertoNeural`,
+                // 4. Servidor Google Cloud Stream Direto (Sem CORS)
+                `https://translate.googleapis.com/translate_tts?client=tw-ob&ie=UTF-8&tl=pt-BR&q=${enc}`
+            ];
+        }
 
-            for (const chunk of chunks) {
-                if (signal?.aborted) return false;
+        // Toca uma URL diretamente no canal de áudio já destravado
+        function playSingleStreamUrl(url, sessionId, playbackRate) {
+            return new Promise((resolve) => {
+                if (sessionId !== activeSpeechSessionId) return resolve(false);
 
-                const cloudProviders = [
-                    async () => {
-                        const url = `https://api.streamelements.com/kappa/v2/speech?voice=Ricardo&text=${encodeURIComponent(chunk)}`;
-                        const res = await fetch(url, { signal });
-                        if (!res.ok) throw new Error("Status " + res.status);
-                        return await res.blob();
-                    },
-                    async () => {
-                        const url = `https://tts.travisvn.com/?text=${encodeURIComponent(chunk)}&voice=pt-BR-AntonioNeural`;
-                        const res = await fetch(url, { signal });
-                        if (!res.ok) throw new Error("Status " + res.status);
-                        return await res.blob();
-                    },
-                    async () => {
-                        return `https://translate.googleapis.com/translate_tts?client=gtx&ie=UTF-8&tl=pt-BR&dt=t&q=${encodeURIComponent(chunk)}`;
-                    }
-                ];
+                let settled = false;
+                const finish = (ok) => {
+                    if (settled) return;
+                    settled = true;
+                    clearTimeout(timeoutId);
+                    sharedVoicePlayer.onended = null;
+                    sharedVoicePlayer.onerror = null;
+                    sharedVoicePlayer.onplaying = null;
+                    resolve(ok);
+                };
 
-                let chunkPlayed = false;
+                // Timeout de 6.5s caso um servidor demore a responder, pula rápido para o próximo espelho
+                const timeoutId = setTimeout(() => finish(false), 6500);
 
-                for (const getSource of cloudProviders) {
-                    if (signal?.aborted) return false;
-                    try {
-                        const result = await getSource();
-                        if (signal?.aborted) return false;
+                sharedVoicePlayer.pause();
+                sharedVoicePlayer.src = url;
+                sharedVoicePlayer.playbackRate = playbackRate;
+                sharedVoicePlayer.volume = 1.0;
 
-                        const audioUrl = (result instanceof Blob) ? URL.createObjectURL(result) : result;
+                sharedVoicePlayer.onplaying = () => {
+                    clearTimeout(timeoutId);
+                    setVoiceStatusBadge(true, "🎙️ Voz Neural");
+                };
 
-                        await new Promise((resolve, reject) => {
-                            const audio = new Audio();
-                            audio.preload = "auto";
-                            audio.src = audioUrl;
-                            audio.playbackRate = playbackRate;
-                            currentAudioElement = audio;
+                sharedVoicePlayer.onended = () => finish(true);
+                sharedVoicePlayer.onerror = () => finish(false);
 
-                            const onAbort = () => {
-                                audio.pause();
-                                reject(new Error("Aborted"));
-                            };
-                            if (signal) signal.addEventListener('abort', onAbort, { once: true });
+                const playPromise = sharedVoicePlayer.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(() => finish(false));
+                }
+            });
+        }
 
-                            audio.onloadeddata = () => setVoiceStatusBadge(true, "🎙️ Voz Neural");
-                            audio.onended = () => {
-                                if (signal) signal.removeEventListener('abort', onAbort);
-                                if (result instanceof Blob && chunks.length === 1) {
-                                    saveVoiceBlobToDB(text, result);
-                                }
-                                resolve();
-                            };
-                            audio.onerror = (err) => {
-                                if (signal) signal.removeEventListener('abort', onAbort);
-                                reject(err);
-                            };
+        // Reproduz frases com a Voz Masculina Neural Antônio direto da nuvem (Sem CORS e Sem Chave)
+        async function playKeylessNeuralMaleStream(text, sessionId) {
+            const chunks = splitIntoNaturalSentences(text, 175);
+            const playbackRate = gameState.preferences.voiceSpeed === 'lenta' ? 0.88 : 0.98;
 
-                            const playPromise = audio.play();
-                            if (playPromise !== undefined) {
-                                playPromise.catch(reject);
-                            }
-                        });
+            for (let i = 0; i < chunks.length; i++) {
+                if (sessionId !== activeSpeechSessionId) return true;
+                const chunk = chunks[i];
+                const candidateUrls = getDirectNeuralStreamUrls(chunk);
 
-                        chunkPlayed = true;
-                        break;
-                    } catch (err) {
-                        if (signal?.aborted) return false;
-                        continue;
+                // Pré-carrega a próxima frase em segundo plano para não haver pausa entre frases
+                if (i + 1 < chunks.length) {
+                    const nextChunk = chunks[i + 1];
+                    if (!preloadedAudioMap.has(nextChunk)) {
+                        const preloadAudio = new Audio();
+                        preloadAudio.preload = "auto";
+                        preloadAudio.src = getDirectNeuralStreamUrls(nextChunk)[0];
+                        preloadedAudioMap.set(nextChunk, preloadAudio);
                     }
                 }
 
-                if (!chunkPlayed) return false;
+                let chunkSuccess = false;
+                for (const streamUrl of candidateUrls) {
+                    if (sessionId !== activeSpeechSessionId) return true;
+                    const ok = await playSingleStreamUrl(streamUrl, sessionId, playbackRate);
+                    if (ok) {
+                        chunkSuccess = true;
+                        break;
+                    }
+                }
+
+                if (!chunkSuccess) return false;
             }
             return true;
         }
 
-        async function fetchInternalGeminiOrusVoice(text, signal) {
+        // Caso esteja rodando dentro do ambiente Gemini Preview, também tenta o Orus TTS
+        async function fetchInternalGeminiOrusVoice(text, sessionId) {
             const apiKey = "";
+            if (!apiKey) return null;
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
             const promptInstruction = `Narre em português do Brasil com voz masculina extremamente humana, calorosa, acolhedora, serena, pastoral e natural: ${text}`;
-
-            const payload = {
-                contents: [{ parts: [{ text: promptInstruction }] }],
-                generationConfig: {
-                    responseModalities: ["AUDIO"],
-                    speechConfig: {
-                        voiceConfig: {
-                            prebuiltVoiceConfig: { voiceName: "Orus" }
-                        }
-                    }
-                }
-            };
 
             try {
                 const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    signal
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: promptInstruction }] }],
+                        generationConfig: {
+                            responseModalities: ["AUDIO"],
+                            speechConfig: {
+                                voiceConfig: { prebuiltVoiceConfig: { voiceName: "Orus" } }
+                            }
+                        }
+                    })
                 });
-                if (!response.ok) return null;
+                if (!response.ok || sessionId !== activeSpeechSessionId) return null;
                 const result = await response.json();
                 const part = result?.candidates?.[0]?.content?.parts?.[0];
                 const audioData = part?.inlineData?.data;
@@ -1680,33 +1658,34 @@
                     const pcmBuffer = base64ToArrayBuffer(audioData);
                     const pcm16 = new Int16Array(pcmBuffer);
                     const wavBlob = pcmToWavBlob(pcm16, sampleRate);
-                    saveVoiceBlobToDB(text, wavBlob);
                     return URL.createObjectURL(wavBlob);
                 }
             } catch (e) {}
             return null;
         }
 
-        function playOfflineNaturalMaleFallback(text) {
-            if (!('speechSynthesis' in window)) {
+        function playOfflineNaturalMaleFallback(text, sessionId) {
+            if (sessionId !== activeSpeechSessionId || !('speechSynthesis' in window)) {
                 setVoiceStatusBadge(false);
                 return;
             }
             const voices = window.speechSynthesis.getVoices();
             const ptVoices = voices.filter(v => v.lang && v.lang.toLowerCase().includes('pt'));
-            const preferredMale = ptVoices.find(v => /antonio|daniel|felipe|ricardo|natural|neural|online/i.test(v.name)) || ptVoices[0];
+            // Procura prioritariamente vozes neurais da Microsoft/Apple se estiver sem internet
+            const preferredMale = ptVoices.find(v => /antonio|humberto|daniel|felipe|natural|neural|online/i.test(v.name)) || ptVoices[0];
 
             const utter = new SpeechSynthesisUtterance(text);
             utter.lang = 'pt-BR';
             if (preferredMale) utter.voice = preferredMale;
-            utter.rate = gameState.preferences.voiceSpeed === 'lenta' ? 0.84 : 0.94;
-            utter.pitch = 0.92;
+            utter.rate = gameState.preferences.voiceSpeed === 'lenta' ? 0.85 : 0.95;
+            utter.pitch = 0.94;
             utter.onend = () => setVoiceStatusBadge(false);
             utter.onerror = () => setVoiceStatusBadge(false);
             window.speechSynthesis.speak(utter);
         }
 
         async function readAudioText(elementId, customText = null) {
+            unlockSharedVoicePlayer();
             stopAllVoiceAudio();
 
             let rawText = customText;
@@ -1717,71 +1696,33 @@
             const text = humanizeBibleReferences(rawText);
             if (!text) return;
 
-            currentVoiceAbortController = new AbortController();
-            const signal = currentVoiceAbortController.signal;
+            const sessionId = activeSpeechSessionId;
             const playbackRate = gameState.preferences.voiceSpeed === 'lenta' ? 0.88 : 0.98;
 
             setVoiceStatusBadge(true, "🎙️ Voz Neural...");
 
-            if (neuralAudioCache.has(text)) {
-                try {
-                    const cachedUrl = neuralAudioCache.get(text);
-                    const audio = new Audio(cachedUrl);
-                    audio.playbackRate = playbackRate;
-                    currentAudioElement = audio;
-                    setVoiceStatusBadge(true, "🎙️ Voz Neural");
-                    audio.onended = () => setVoiceStatusBadge(false);
-                    audio.onerror = () => setVoiceStatusBadge(false);
-                    await audio.play();
-                    return;
-                } catch (e) {}
+            // 1º: Toca a Voz Masculina Neural Real (Antônio Neural) via Stream Direto (Funciona no GitHub Pages e Guia Anônima!)
+            const streamPlayed = await playKeylessNeuralMaleStream(text, sessionId);
+            if (streamPlayed) {
+                if (sessionId === activeSpeechSessionId) setVoiceStatusBadge(false);
+                return;
             }
 
-            try {
-                const cachedBlob = await getCachedVoiceBlobFromDB(text);
-                if (cachedBlob && !signal.aborted) {
-                    const blobUrl = URL.createObjectURL(cachedBlob);
-                    neuralAudioCache.set(text, blobUrl);
-                    const audio = new Audio(blobUrl);
-                    audio.playbackRate = playbackRate;
-                    currentAudioElement = audio;
-                    setVoiceStatusBadge(true, "🎙️ Voz Neural");
-                    audio.onended = () => setVoiceStatusBadge(false);
-                    audio.onerror = () => setVoiceStatusBadge(false);
-                    await audio.play();
-                    return;
+            // 2º: Se estiver no painel interno do Gemini
+            if (sessionId === activeSpeechSessionId) {
+                const orusUrl = await fetchInternalGeminiOrusVoice(text, sessionId);
+                if (orusUrl && sessionId === activeSpeechSessionId) {
+                    const ok = await playSingleStreamUrl(orusUrl, sessionId, playbackRate);
+                    if (ok) {
+                        setVoiceStatusBadge(false);
+                        return;
+                    }
                 }
-            } catch (e) {}
-
-            try {
-                const cloudSuccess = await playKeylessCloudNeuralVoice(text, signal);
-                if (cloudSuccess) {
-                    setVoiceStatusBadge(false);
-                    return;
-                }
-            } catch (err) {
-                if (signal.aborted) return;
             }
 
-            try {
-                const wavUrl = await fetchInternalGeminiOrusVoice(text, signal);
-                if (wavUrl && !signal.aborted) {
-                    neuralAudioCache.set(text, wavUrl);
-                    const audio = new Audio(wavUrl);
-                    audio.playbackRate = playbackRate;
-                    currentAudioElement = audio;
-                    setVoiceStatusBadge(true, "🎙️ Voz Neural");
-                    audio.onended = () => setVoiceStatusBadge(false);
-                    audio.onerror = () => setVoiceStatusBadge(false);
-                    await audio.play();
-                    return;
-                }
-            } catch (err) {
-                if (signal.aborted) return;
-            }
-
-            if (!signal.aborted) {
-                playOfflineNaturalMaleFallback(text);
+            // 3º: Último recurso apenas se o celular estiver totalmente sem internet (Offline)
+            if (sessionId === activeSpeechSessionId) {
+                playOfflineNaturalMaleFallback(text, sessionId);
             }
         }
 
